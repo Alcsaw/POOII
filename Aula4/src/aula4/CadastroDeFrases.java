@@ -51,8 +51,8 @@ public class CadastroDeFrases extends JFrame {
                 if ((e.getKeyCode() == KeyEvent.VK_F) && e.isControlDown()) {
                     // isControlDown resume a comparação de modificadores comentada acima
                     System.out.println("FIND key combination pressed.");
-                    //Localizar l = new Localizar(getThis());
-                    Localizar_optionPane l = new Localizar_optionPane(getThis());
+                    Localizar l = new Localizar(getThis());
+                    //Localizar_optionPane l = new Localizar_optionPane(getThis());
                     l.setVisible(true);        
                 }
             }
@@ -72,8 +72,8 @@ public class CadastroDeFrases extends JFrame {
                     textAreaConcat.append(phrase);
                     textFieldPhrase.requestFocus();
                 } else if ((e.getKeyCode() == KeyEvent.VK_F) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
-                    //Localizar l = new Localizar(getThis());
-                    Localizar_optionPane l = new Localizar_optionPane(getThis());
+                    Localizar l = new Localizar(getThis());
+                    //Localizar_optionPane l = new Localizar_optionPane(getThis());
                     l.setVisible(true);        
                     System.out.println("FIND key combination pressed.");
                 }
