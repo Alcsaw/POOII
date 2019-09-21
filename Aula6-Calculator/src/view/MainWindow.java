@@ -7,22 +7,25 @@ package view;
 
 import com.sun.xml.internal.messaging.saaj.util.TeeInputStream;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
-import model.Calculate;
+import model.Calculator;
 
 /**
  *
@@ -65,30 +68,31 @@ public class MainWindow extends JFrame {
         //rootPanel.add(displayPanel);
         panelRoot.add(panelDisplay, BorderLayout.PAGE_START);
         
-        panelButtons = new JPanel(new GridLayout(1, 2, 10, 10));
+        panelButtons = new JPanel(new GridLayout(1, 2, 5, 5));
         //rootPanel.add(buttonsPanel);
         panelRoot.add(panelButtons, BorderLayout.CENTER);
         
-        panelScientific = new JPanel(new GridLayout(4, 3, 10, 10));
+        panelScientific = new JPanel(new GridLayout(4, 3, 5, 5));
         borderScientific = BorderFactory.createTitledBorder("Scientific");
         panelScientific.setBorder(borderScientific);
         panelButtons.add(panelScientific);
         
-        panelStandard = new JPanel(new GridLayout(4, 4, 10, 10));
+        panelStandard = new JPanel(new GridLayout(4, 4, 5, 5));
         borderStandard = BorderFactory.createTitledBorder("Standard");
         panelStandard.setBorder(borderStandard);
         panelButtons.add(panelStandard);
         
         this.setContentPane(panelRoot);
         
-        this.setBounds(200, 100, 600, 400);
+        this.setBounds(200, 100, 450, 300);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         
         /* Display */
-        tf_display = new JTextField(50);
+        tf_display = new JTextField(40);
+        tf_display.setEditable(false);
+        tf_display.setBackground(Color.white);
         tf_display.setAlignmentX(RIGHT_ALIGNMENT);
-        tf_display.setEnabled(false);
         panelDisplay.add(tf_display);
         
         
@@ -137,52 +141,67 @@ public class MainWindow extends JFrame {
         //labelStandard = new JLabel("Standard");
         btn7 = new JButton("7");
         panelStandard.add(btn7);
+        btn7.addActionListener(new eventHandler());
         
         btn8 = new JButton("8");
         panelStandard.add(btn8);
+        btn8.addActionListener(new eventHandler());
         
         btn9 = new JButton("9");
         panelStandard.add(btn9);
+        btn9.addActionListener(new eventHandler());
         
         btnDivide = new JButton("/");
         panelStandard.add(btnDivide);
+        btnDivide.addActionListener(new eventHandler());
         
         btn4 = new JButton("4");
         panelStandard.add(btn4);
+        btn4.addActionListener(new eventHandler());
         
         btn5 = new JButton("5");
         panelStandard.add(btn5);
+        btn5.addActionListener(new eventHandler());
         
         btn6 = new JButton("6");
         panelStandard.add(btn6);
+        btn6.addActionListener(new eventHandler());
         
         btnMultiply = new JButton("*");
         panelStandard.add(btnMultiply);
+        btnMultiply.addActionListener(new eventHandler());
         
         btn1 = new JButton("1");
         panelStandard.add(btn1);
+        btn1.addActionListener(new eventHandler());
         
         btn2 = new JButton("2");
         panelStandard.add(btn2);
+        btn2.addActionListener(new eventHandler());
         
         btn3 = new JButton("3");
         panelStandard.add(btn3);
+        btn3.addActionListener(new eventHandler());
         
         btnMinus = new JButton("-");
         panelStandard.add(btnMinus);
+        btnMinus.addActionListener(new eventHandler());
         
         btn0 = new JButton("0");
         panelStandard.add(btn0);
+        btn0.addActionListener(new eventHandler());
         
         btnDot = new JButton(".");
         panelStandard.add(btnDot);
+        btnDot.addActionListener(new eventHandler());
         
         btnEquals = new JButton("=");
         panelStandard.add(btnEquals);
+        btnEquals.addActionListener(new eventHandler());
         
         btnSum = new JButton("+");
         panelStandard.add(btnSum);
-        
+        btnSum.addActionListener(new eventHandler());
         
     }
     
@@ -191,9 +210,54 @@ public class MainWindow extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            double temperatureCelsius = Double.parseDouble(tf_display.getText());
+            System.out.println("source:" + e.getActionCommand());
+            model.Calculator calc = new Calculator();
             
-            model.Calculate conversaoTemperatura = new Calculate();
+            ArrayList<String> operations = new ArrayList<>();
+            
+            if (e.getActionCommand().equals("=")) {
+                try {
+                    calc.doCalculation(operations);
+                } catch (ArithmeticException | Calculator.OperationFormatException ex) {
+                    Logger.getLogger(MainWindow.class.getName()).log(Level.WARNING, null, ex);
+                }
+            } else {
+                tf_display.setText(tf_display.getText() + e.getActionCommand());
+                operations.add(e.getActionCommand());
+            }
+            
+            try {
+                Integer.parseInt(e.getActionCommand());
+                
+            } catch (NumberFormatException notAnInteger) {
+                switch (e.getActionCommand()) {
+                    case "/":
+                        System.out.println("Divide");
+                        break;
+                    case "*":
+                        System.out.println("Multiply");
+                        break;
+                    case "-":
+                        System.out.println("Subtract");
+                        break;
+                    case "+":
+                        System.out.println("Sum");
+                        break;
+                    case ".":
+                        System.out.println("Dot");
+                        break;
+                    case "=":
+                        System.out.println("Equals");
+                        break;
+                    default:
+                        System.out.println("UNKNOWN: " + e.getActionCommand());
+                        break;
+                }
+                
+            }
+//            double temperatureCelsius = Double.parseDouble(tf_display.getText());
+            
+            
             //double fahrenheit = conversaoTemperatura.converterParaFahrenheit();
             
             //labelFahrenheit.setText(String.format("%.2fº Fahrenheit", fahrenheit));
