@@ -1,57 +1,32 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package model;
 
 /**
  *
  * @author m98567
+ * @github Alcsaw
  */
 import java.util.ArrayList;
 
 /**
- * Simple line-oriented calculator program. The class can also be used to create
- * other calculator programs.
+ * Model for Standard mode of the Calculator program.
+ * This class handles basic arithmetic operations (+, -, *, /).
  */
-public class Calculator {
+public class StandardCalculator {
 
     private double result;
     private final double precision = 0.0001;
     //Numbers this close to zero are treated as if equal to zero.
 
+    
     public static void main(String[] args) throws Exception {
-        Calculator calc = new Calculator();
-        
-        /*try {
-            ArrayList<String> operations = new ArrayList<>();
-            calc.doCalculation();
-        } catch (ArithmeticException e) {
-            calc.handleArithmeticException(e);
-        } catch (Exception e) {
-            calc.handleUnknownOpException(e);
-        }*/
-        
-        System.out.println("The final result is " + calc.getResult());
-        System.out.println("Calculator program ending.");
+        StandardCalculator stdCalc = new StandardCalculator();
     }
 
-    public Calculator() {
+    
+    public StandardCalculator() {
         result = 0;
     }
 
-    public void reset() {
-        result = 0;
-    }
-
-    public void setResult(double newResult) {
-        result = newResult;
-    }
-
-    public double getResult() {
-        return result;
-    }
 
     /**
      * The core of a calculator. Input errors
@@ -59,7 +34,7 @@ public class Calculator {
      * @param operations - ArrayList of operations
      * @return Double - the result of the calculation
      * @throws java.lang.ArithmeticException
-     * @throws model.Calculator.OperationFormatException
+     * @throws model.StandardCalculator.OperationFormatException
      */
     public double doCalculation(ArrayList<String> operations)
             throws ArithmeticException, OperationFormatException {
@@ -126,11 +101,6 @@ public class Calculator {
         
         formattedOperations.add(number);
         
-        /*for (int i=0; i <= operations.size(); i++) {
-            if (operations.get(i).equals("+"))
-            number += operations.get(i);
-        }*/
-        
         return formattedOperations;
     }
 
@@ -166,13 +136,6 @@ public class Calculator {
                             ("The operation " + op + "is not valid");
         }
         return operationResult;
-    }
-
-    public void handleArithmeticException( ArithmeticException e) {
-        System.out.println("Are you trying to divide by zero?");
-        System.out.println("Program aborted");
-        // TODO: clear and reset
-        System.exit(0);
     }
 
     
