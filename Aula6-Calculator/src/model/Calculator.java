@@ -73,10 +73,10 @@ public class Calculator {
             double n2 = Double.parseDouble(formattedOperations.get(2));
             
             formattedOperations.remove(0);
-            formattedOperations.remove(1);
-            formattedOperations.remove(2);
+            formattedOperations.remove(0);
+            formattedOperations.remove(0);
             
-            formattedOperations.add(Double.toString(evaluate(op, n1, n2)));
+            formattedOperations.add(0, Double.toString(evaluate(op, n1, n2)));
         }
         
         return Double.parseDouble(formattedOperations.get(0));
@@ -99,7 +99,7 @@ public class Calculator {
         ArrayList<String> formattedOperations = new ArrayList<>();
         
         String number = "";
-        String operator = "";
+        String operator;
         
         for (String digit : operations) {
             if (digit.equals("+") ||
@@ -107,7 +107,7 @@ public class Calculator {
                 digit.equals("*") ||
                 digit.equals("/"))
             {
-                operator += digit;
+                operator = digit;
                 
                 if (number.length() == 0)
                     throw new OperationFormatException(operations,
@@ -124,12 +124,14 @@ public class Calculator {
             }
         }
         
+        formattedOperations.add(number);
+        
         /*for (int i=0; i <= operations.size(); i++) {
             if (operations.get(i).equals("+"))
             number += operations.get(i);
         }*/
         
-        return operations;
+        return formattedOperations;
     }
 
     /**

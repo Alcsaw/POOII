@@ -44,6 +44,10 @@ public class MainWindow extends JFrame {
     private JButton btn7, btn8, btn9, btnDivide, btn4, btn5, btn6, btnMultiply,
             btn1, btn2, btn3, btnMinus, btn0, btnDot, btnEquals, btnSum;
     
+    ArrayList<String> operations = new ArrayList<>();
+    model.Calculator calc = new Calculator();
+    boolean equalsPressed = false;
+    
     public MainWindow() {
         super("Calculator");
         
@@ -208,52 +212,74 @@ public class MainWindow extends JFrame {
     // Classe Interna = Controller
     public class eventHandler implements ActionListener {
 
+        
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("source:" + e.getActionCommand());
-            model.Calculator calc = new Calculator();
-            
-            ArrayList<String> operations = new ArrayList<>();
+            boolean isOperator = false;
             
             if (e.getActionCommand().equals("=")) {
+                System.out.println("Equals");
+                
+                double result = -666;
+                equalsPressed = true;
+                
                 try {
-                    calc.doCalculation(operations);
+                    result = calc.doCalculation(operations);
                 } catch (ArithmeticException | Calculator.OperationFormatException ex) {
                     Logger.getLogger(MainWindow.class.getName()).log(Level.WARNING, null, ex);
                 }
-            } else {
-                tf_display.setText(tf_display.getText() + e.getActionCommand());
-                operations.add(e.getActionCommand());
-            }
-            
-            try {
-                Integer.parseInt(e.getActionCommand());
                 
-            } catch (NumberFormatException notAnInteger) {
-                switch (e.getActionCommand()) {
-                    case "/":
-                        System.out.println("Divide");
-                        break;
-                    case "*":
-                        System.out.println("Multiply");
-                        break;
-                    case "-":
-                        System.out.println("Subtract");
-                        break;
-                    case "+":
-                        System.out.println("Sum");
-                        break;
-                    case ".":
-                        System.out.println("Dot");
-                        break;
-                    case "=":
-                        System.out.println("Equals");
-                        break;
-                    default:
-                        System.out.println("UNKNOWN: " + e.getActionCommand());
-                        break;
+                tf_display.setText(Double.toString(result));
+            } else {
+                
+                try {
+                    Integer.parseInt(e.getActionCommand());
+                } catch (NumberFormatException notAnInteger) {
+                    switch (e.getActionCommand()) {
+                        case "/":
+                            System.out.println("Divide");
+                            isOperator = true;
+                            break;
+                        case "*":
+                            System.out.println("Multiply");
+                            isOperator = true;
+                            break;
+                        case "-":
+                            System.out.println("Subtract");
+                            isOperator = true;
+                            break;
+                        case "+":
+                            System.out.println("Sum");
+                            isOperator = true;
+                            break;
+                        case ".":
+                            System.out.println("Dot");
+                            break;
+                        /*case "=":
+                            System.out.println("Equals");
+                            break;*/
+                        default:
+                            System.out.println("UNKNOWN: " + e.getActionCommand());
+                            break;
+                    }
                 }
                 
+                if (equalsPressed && isOperator) {
+                    // If we want to perform an operation over the previous result, keep it.
+                    tf_display.setText(tf_display.getText() + e.getActionCommand());
+                    equalsPressed = false;
+                } else if (equalsPressed) {
+                    // But if we want to perform a new calculation, clears the previous result.
+                    tf_display.setText(e.getActionCommand());
+                    equalsPressed = false;
+                    operations.clear();
+                } else {
+                    tf_display.setText(tf_display.getText() + e.getActionCommand());
+                }
+
+                operations.add(e.getActionCommand());
             }
 //            double temperatureCelsius = Double.parseDouble(tf_display.getText());
             
