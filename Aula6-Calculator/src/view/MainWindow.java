@@ -3,15 +3,19 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -30,7 +34,7 @@ import model.StandardCalculator;
 public class MainWindow extends JFrame {
     private JMenuBar menuBar;
     private JMenu menuEdit, menuView, menuHelp;
-    private JMenuItem mItemSobre;
+    private JMenuItem mItemAbout, mItemScientificMode, mItemLogs;
     private JPanel panelRoot, panelDisplay, panelButtons, panelScientific,
             panelStandard;
     private JTextField tf_display;
@@ -53,13 +57,43 @@ public class MainWindow extends JFrame {
         menuBar = new JMenuBar();
         this.setJMenuBar(menuBar);
         
-        menuEdit = new JMenu("Edit");
-        menuBar.add(menuEdit);
+        //menuEdit = new JMenu("Edit");
+        //menuBar.add(menuEdit);
         menuView = new JMenu("View");
         menuBar.add(menuView);
         menuHelp = new JMenu("Help");
         menuBar.add(menuHelp);
+        
+        
+        // Scientific Mode Chooser
+        mItemScientificMode = new JCheckBoxMenuItem("Scientific Mode", true);
+        menuView.add(mItemScientificMode);
+        mItemScientificMode.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panelScientific.setVisible(mItemScientificMode.isSelected());
                 
+                if (mItemScientificMode.isSelected()) {
+                    panelButtons.setLayout(new GridLayout(1, 2, 5, 5));
+                } else {
+                    panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.X_AXIS));
+                    //tf_display = new JTextField(20);  //Y doesn't it work?
+                }
+                
+            }
+        });
+
+        
+        // Menu Item About
+        mItemAbout = new JMenuItem("About");
+        menuHelp.add(mItemAbout);
+        mItemAbout.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AboutDialog about = new AboutDialog();
+                
+            }
+        });
         
         /* Layout */
         //rootPanel = new JPanel(new GridLayout(2, 1, 10, 10));
