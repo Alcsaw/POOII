@@ -1,0 +1,6 @@
+Nome;Legenda
+Lucio Lemes;10
+Samuel Thames;39
+Mario Garcez;41
+Joao Higino;70
+Janete Ruscov;74
