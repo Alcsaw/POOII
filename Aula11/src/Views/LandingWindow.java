@@ -130,7 +130,7 @@ public class LandingWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JFileChooser fileChooserCandidatos = new JFileChooser();
+        JFileChooser fileChooserCandidatos = new JFileChooser("/home/alcsaw/Documents/POOII/Aula11/src/assets");
         fileChooserCandidatos.showOpenDialog(this);
         try {
             CandidatosContent = fileContoller.readFile(fileChooserCandidatos);
@@ -144,11 +144,15 @@ public class LandingWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+        candidatoController.geraCandidatos(candidatos, CandidatosContent);
+        candidatoController.contabilizaVotos(candidatos, VotosContent);
+        
+        TotalizacaoVotos windowTotalizacao = new TotalizacaoVotos(candidatos);
+        windowTotalizacao.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        JFileChooser fileChooserVotos = new JFileChooser();
+        JFileChooser fileChooserVotos = new JFileChooser("/home/alcsaw/Documents/POOII/Aula11/src/assets");
         fileChooserVotos.showOpenDialog(this);
         try {
             VotosContent = fileContoller.readFile(fileChooserVotos);
@@ -225,8 +229,10 @@ public class LandingWindow extends javax.swing.JFrame {
                 String line;
                     do {
                         line = bufferedReader.readLine();
-                        System.out.println(line);
-                        content.add(line);
+                        if (line != null) {
+                            System.out.println(line);
+                            content.add(line);
+                        }
                     } while (line != null);
             } catch (IOException iOException) {
                 System.out.println("ERRO ao ler o arquivo.");
@@ -241,7 +247,7 @@ public class LandingWindow extends javax.swing.JFrame {
         
         public static void geraCandidatos(ArrayList<Candidato> candidatos, ArrayList<String> candidatosContent) {
             
-            for (int i = 2; i <= candidatosContent.size(); i++) {
+            for (int i = 1; i < candidatosContent.size(); i++) {
                 String line = candidatosContent.get(i);
                 String[] dados  = line.split(";");
                 String nome = dados[0];
@@ -262,6 +268,11 @@ public class LandingWindow extends javax.swing.JFrame {
                         candidato.setQuantidadeVotos(candidato.getQuantidadeVotos() + 1);
                         found = true;
                     }
+                }
+                
+                if (! found) {
+                    System.out.println("Legenda incorreta: " + legenda);
+                    throw new RuntimeException("Voto para candidato inexistente");
                 }
             }
         }

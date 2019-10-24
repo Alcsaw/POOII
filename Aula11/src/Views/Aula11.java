@@ -11,6 +11,7 @@ public class Aula11 {
      */
     public static void main(String[] args) {
         LandingWindow landingWindow = new LandingWindow();
+        landingWindow.setVisible(true);
     }
     
 }
