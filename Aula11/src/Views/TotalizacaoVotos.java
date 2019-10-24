@@ -5,6 +5,10 @@
  */
 package Views;
 
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+import models.Candidato;
+
 /**
  *
  * @author m98567
@@ -13,9 +17,31 @@ public class TotalizacaoVotos extends javax.swing.JFrame {
 
     /**
      * Creates new form TotalizacaoVotos
+     * @param candidatos ArrayList<Candidato>
      */
-    public TotalizacaoVotos() {
+    public TotalizacaoVotos(ArrayList<Candidato> candidatos) {
+        super("Totalização de Votos");
         initComponents();
+        montarTabela(candidatos);
+    }
+
+    private TotalizacaoVotos() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    private void montarTabela(ArrayList<Candidato> candidatos){
+        //código que carrega a lista de livros para a JTable
+        DefaultTableModel tableModel = (DefaultTableModel)TotalizacaoVotosTable.getModel();
+        tableModel.setRowCount(0);//limpar minha tabela
+        for(int i=0; i<candidatos.size(); i++){
+           Object tableRow[] = new Object[3];
+           Candidato temp = candidatos.get(i);
+           tableRow[0] = temp.getNome();
+           tableRow[1] = temp.getLegenda();
+           tableRow[2] = temp.getQuantidadeVotos();
+           
+           tableModel.addRow(tableRow);
+        }        
     }
 
     /**
@@ -29,26 +55,23 @@ public class TotalizacaoVotos extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        TotalizacaoVotosTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        TotalizacaoVotosTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
-                "Nome Candidato", "Legenda", "Quantidade de Votos"
+                "Candidato", "Legenda", "Quantidade de votos"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Integer.class
+                java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -59,7 +82,7 @@ public class TotalizacaoVotos extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(TotalizacaoVotosTable);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -124,8 +147,8 @@ public class TotalizacaoVotos extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable TotalizacaoVotosTable;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }
