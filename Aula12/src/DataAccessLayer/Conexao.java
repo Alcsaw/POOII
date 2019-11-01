@@ -2,6 +2,7 @@ package DataAccessLayer;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,5 +38,9 @@ public class Conexao {
 
     public Connection getConnection() {
         return connection;
+    }
+    
+    public PreparedStatement preparedStatement(String sql) throws SQLException {
+        return connection.prepareStatement(sql);
     }
 }
