@@ -15,7 +15,7 @@ CREATE TABLE `aula13-ifdm`.`cidade` (
   `uf` CHAR(2) NOT NULL,
   `descricao` VARCHAR(45) NOT NULL,
   `saude` DOUBLE NOT NULL,
-  `edcacao` DOUBLE NOT NULL,
+  `educacao` DOUBLE NOT NULL,
   `renda` DOUBLE NOT NULL,
   `ifdm` DOUBLE NOT NULL,
   `ranking_nacional` INT NULL,
