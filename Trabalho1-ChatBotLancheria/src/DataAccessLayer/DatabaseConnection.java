@@ -13,14 +13,14 @@ import java.util.logging.Logger;
  */
 public class DatabaseConnection {
     private String driver = "org.gjt.mm.mysql.Driver";
-    private String url = "jdbc:mysql://localhost/" + "aula13-ifdm";
+    private String url = "jdbc:mysql://localhost/" + "lancheria";
     private String usuario = "root";
-    private String senha = "";
+    private String senha = "root";
     private Connection connection;
     
     public DatabaseConnection() throws ClassNotFoundException, SQLException {
         Class.forName(driver);  //carregar o driver para o Java
-        connection = (Connection) DriverManager.getConnection(url, usuario, senha); //abrir a conexão
+        connection = DriverManager.getConnection(url, usuario, senha);
     }
     
     public void testConnection() {
