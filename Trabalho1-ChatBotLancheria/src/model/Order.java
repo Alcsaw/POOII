@@ -17,7 +17,7 @@ public class Order {
     private int id;
     private Client client;
     private ArrayList<OrderProduct> orderProducts;
-    private Date date;
+    private String date;
     private boolean done;
     private boolean delivered;
 
@@ -25,7 +25,7 @@ public class Order {
         
     }
     
-    public Order(int id, Client client, ArrayList<OrderProduct> orderProducts, Date date, boolean done, boolean delivered) {
+    public Order(int id, Client client, ArrayList<OrderProduct> orderProducts, String date, boolean done, boolean delivered) {
         this.id = id;
         this.client = client;
         this.orderProducts = orderProducts;
@@ -58,11 +58,11 @@ public class Order {
         this.orderProducts = orderProducts;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

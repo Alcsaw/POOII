@@ -81,7 +81,7 @@ public class DAO<T> {
                 
                 Order ord = new Order();
                 ord.setId(resultSet.getInt("id"));
-                ord.setDate(resultSet.getDate("data"));
+                ord.setDate(resultSet.getString("data"));
                 ord.setDone(resultSet.getInt("finalizado") == 1);
                 ord.setDelivered(resultSet.getInt("entregue") == 1);
                 
@@ -184,6 +184,13 @@ public class DAO<T> {
             st.setString(2, prod.getDescription());
             st.setDouble(3, prod.getPrice());
             st.setInt(4, prod.getId());
+        } else if(obj instanceof Order) {
+            String sql = "UPDATE pedido SET finalizado=?, entregue=? WHERE pedido.id=?";
+            Order order = (Order)obj;
+            st = connection.preparedStatement(sql);
+            st.setInt(1, order.isDone() ? 1 : 0);
+            st.setInt(2, order.isDelivered() ? 1 : 0);
+            st.setInt(3, order.getId());
         } else {
             throw new IllegalArgumentException("Classe não tratada para acesso ao BD");
         }
