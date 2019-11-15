@@ -23,9 +23,14 @@ public class Trabalho1ChatBotLancheria {
             DAO<Category> categoryDAO = new DAO<Category>();
             DAO<Client> clientDAO = new DAO<Client>();
             
-            Category pr = new Category();
-            pr.setId(6);
-            categoryDAO.delete(pr);
+            ArrayList<Product> prods = productDAO.getProductsFromCategory(new Category(3, "Cachorros quentes"));
+            for(Product p : prods) {
+                System.out.println(p.getId());
+                System.out.println(p.getDescription());
+                System.out.println(p.getPrice());
+                System.out.println(p.getCategory().getDescription());
+                System.out.println("===============");
+            }
             
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Trabalho1ChatBotLancheria.class.getName()).log(Level.SEVERE, null, ex);

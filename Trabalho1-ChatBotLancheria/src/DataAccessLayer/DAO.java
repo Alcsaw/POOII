@@ -160,4 +160,24 @@ public class DAO<T> {
         st.close();
         return ret > 0; //delete funcionou
     } 
+    
+    public ArrayList<Product> getProductsFromCategory(Category cat) throws SQLException {
+        ArrayList<Product> prodList = new ArrayList<Product>();
+        PreparedStatement st;
+        String sql = "SELECT * FROM produto WHERE produto.categoria_id=?";
+        st = connection.preparedStatement(sql);
+        st.setInt(1, cat.getId());
+        ResultSet rs = st.executeQuery();
+        while(rs.next()) {
+            Product pr = new Product();
+            pr.setId(rs.getInt("id"));
+            pr.setDescription(rs.getString("descricao"));
+            pr.setPrice(rs.getDouble("preco"));
+            pr.setCategory(cat);
+            prodList.add(pr);
+        }
+        rs.close(); // close do result set
+        st.close(); // close do statement
+        return prodList;
+    }
 }
