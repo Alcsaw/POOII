@@ -25,8 +25,9 @@ public class CategoryManagement extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableCategories = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        buttonEditCategory = new javax.swing.JButton();
+        buttonDeleteCategory = new javax.swing.JButton();
+        buttonAddCategory = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -46,14 +47,16 @@ public class CategoryManagement extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel1.setText("Gerenciamento de Categorias");
 
-        jButton1.setText("Adicionar Categoria");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        buttonEditCategory.setText("Editar Categoria");
+        buttonEditCategory.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                buttonEditCategoryActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Excluir Categoria");
+        buttonDeleteCategory.setText("Excluir Categoria");
+
+        buttonAddCategory.setText("Adicionar Categoria");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -67,9 +70,11 @@ public class CategoryManagement extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addGap(122, 122, 122))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(buttonAddCategory)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
+                        .addComponent(buttonEditCategory)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buttonDeleteCategory)
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -81,17 +86,19 @@ public class CategoryManagement extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2)
-                    .addComponent(jButton1))
+                    .addComponent(buttonDeleteCategory)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(buttonEditCategory)
+                        .addComponent(buttonAddCategory)))
                 .addGap(14, 14, 14))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void buttonEditCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonEditCategoryActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_buttonEditCategoryActionPerformed
 
     /**
      * @param args the command line arguments
@@ -129,8 +136,9 @@ public class CategoryManagement extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton buttonAddCategory;
+    private javax.swing.JButton buttonDeleteCategory;
+    private javax.swing.JButton buttonEditCategory;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tableCategories;
