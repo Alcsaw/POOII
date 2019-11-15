@@ -155,7 +155,24 @@ public class DAO<T> {
             sql += " cliente (nome) values (?) ";
             st = connection.preparedStatement(sql);
             st.setString(1, cli.getName());
-        } else {
+        } else if(obj instanceof Order) {
+            Order order = (Order)obj;
+            sql += " pedido (cliente_id, data, finalizado, entregue) values (?,NOW(),?,?) ";
+            st = connection.preparedStatement(sql);
+            st.setInt(1, order.getClient().getId());
+            st.setInt(2, order.isDone() ? 1 : 0);
+            st.setInt(3, order.isDelivered() ? 1 : 0);
+        } else if(obj instanceof OrderProduct) {
+            OrderProduct op = (OrderProduct)obj;
+            sql += " pedido_item (pedido_id, produto_id, quantidade, preco, observacao) values (?,?,?,?,?) ";
+            st = connection.preparedStatement(sql);
+            st.setInt(1, op.getOrder().getId());
+            st.setInt(2, op.getProduct().getId());
+            st.setInt(3, op.getQuantity());
+            st.setDouble(4, op.getTotalPrice());
+            st.setString(5, op.getComment());
+        }
+        else {
             throw new IllegalArgumentException("Classe não tratada para acesso ao BD");
         }
               
