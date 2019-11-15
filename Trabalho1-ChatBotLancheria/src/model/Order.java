@@ -5,6 +5,7 @@
  */
 package model;
 
+import java.sql.Date;
 import java.text.DateFormat;
 import java.util.ArrayList;
 
@@ -15,34 +16,24 @@ import java.util.ArrayList;
 public class Order {
     private int id;
     private Client client;
-    private ArrayList<Product> products;
-    private DateFormat date;
+    private ArrayList<OrderProduct> orderProducts;
+    private Date date;
     private boolean done;
     private boolean delivered;
-    private String observation;
 
     public Order() {
         
     }
     
-    public Order(int id, Client client, ArrayList<Product> products, DateFormat date, boolean isProduced, boolean isDelivered, String observation) {
+    public Order(int id, Client client, ArrayList<OrderProduct> orderProducts, Date date, boolean done, boolean delivered) {
         this.id = id;
         this.client = client;
-        this.products = products;
+        this.orderProducts = orderProducts;
         this.date = date;
-        this.done = isProduced;
-        this.delivered = isDelivered;
-        this.observation = observation;
+        this.done = done;
+        this.delivered = delivered;
     }
 
-    public double calculateTotalPrice() {
-        double sum = 0;
-        for(Product pr : products) {
-            sum += pr.getPrice();
-        }
-        return sum;
-    }
-    
     public int getId() {
         return id;
     }
@@ -59,19 +50,19 @@ public class Order {
         this.client = client;
     }
 
-    public ArrayList<Product> getProducts() {
-        return products;
+    public ArrayList<OrderProduct> getOrderProducts() {
+        return orderProducts;
     }
 
-    public void setProducts(ArrayList<Product> products) {
-        this.products = products;
+    public void setOrderProducts(ArrayList<OrderProduct> orderProducts) {
+        this.orderProducts = orderProducts;
     }
 
-    public DateFormat getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(DateFormat date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -90,14 +81,7 @@ public class Order {
     public void setDelivered(boolean delivered) {
         this.delivered = delivered;
     }
-
-    public String getObservation() {
-        return observation;
-    }
-
-    public void setObservation(String observation) {
-        this.observation = observation;
-    }
+    
     
     
 }

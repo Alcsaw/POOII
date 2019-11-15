@@ -22,14 +22,24 @@ public class Trabalho1ChatBotLancheria {
             DAO<Product> productDAO = new DAO<Product>();
             DAO<Category> categoryDAO = new DAO<Category>();
             DAO<Client> clientDAO = new DAO<Client>();
-            
-            ArrayList<Product> prods = productDAO.getProductsFromCategory(new Category(3, "Cachorros quentes"));
-            for(Product p : prods) {
-                System.out.println(p.getId());
-                System.out.println(p.getDescription());
-                System.out.println(p.getPrice());
-                System.out.println(p.getCategory().getDescription());
-                System.out.println("===============");
+            DAO<Order> orderDAO = new DAO<Order>();
+            ArrayList<Order> orders = orderDAO.get(Order.class);
+            for(Order o : orders) {
+                System.out.println("Id: " + o.getId());
+                System.out.println("Date: " + o.getDate());
+                System.out.println("Done: " + o.isDone());
+                System.out.println("Delivered: "+o.isDelivered());
+                System.out.println("Client id: "+o.getClient().getId());
+                System.out.println("Client name: "+o.getClient().getName());
+                for(OrderProduct op : o.getOrderProducts()) {
+                    System.out.println("----Prod id: "+op.getProduct().getId());
+                    System.out.println("----Prod desc: "+op.getProduct().getDescription());
+                    System.out.println("----has cat: "+(op.getProduct().getCategory() != null));
+                    System.out.println("----Qntde: "+op.getQuantity());
+                    System.out.println("----Price: "+op.getTotalPrice());
+                    System.out.println("----Obs: "+op.getComment());
+                    System.out.println("----is circular: "+ (op.getOrder() != null));
+                }
             }
             
         } catch (ClassNotFoundException ex) {

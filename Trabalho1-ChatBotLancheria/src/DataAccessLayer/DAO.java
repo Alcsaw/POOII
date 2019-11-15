@@ -73,6 +73,56 @@ public class DAO<T> {
                 
                 list.add((T)prod);
             }
+        } else if(classe == Order.class) {
+            sql += " pedido ";
+            preparedStatement = connection.preparedStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                
+                Order ord = new Order();
+                ord.setId(resultSet.getInt("id"));
+                ord.setDate(resultSet.getDate("data"));
+                ord.setDone(resultSet.getInt("finalizado") == 1);
+                ord.setDelivered(resultSet.getInt("entregue") == 1);
+                
+                // busca o cliente do pedido
+                ArrayList<T> clients = this.get(Client.class);
+                for(T c : clients) {
+                    if(((Client)c).getId() == resultSet.getInt("cliente_id")) {
+                        ord.setClient((Client)c);
+                    }
+                }
+                
+                // busca lista de todos os produtos com suas categorias
+                ArrayList<T> prods = this.get(Product.class);
+                
+                // busca e materializa os order_products
+                sql = "select * from pedido_item where pedido_item.pedido_id=?";
+                PreparedStatement st2 = connection.preparedStatement(sql);
+                st2.setInt(1, ord.getId());
+                ResultSet set2 = st2.executeQuery();
+                ArrayList<OrderProduct> ops = new ArrayList<OrderProduct>();
+                
+                while(set2.next()) {
+                    OrderProduct op = new OrderProduct();
+                    // pega id do produto contido nesta linah do pedido_item
+                    int productId = set2.getInt("produto_id");
+                    // encontra o produto pelo id na lista prods
+                    Product auxProd = null;
+                    for(T p : prods) {
+                        if(((Product)p).getId() == productId) {
+                            op.setProduct((Product)p);
+                        }
+                    }
+                    op.setOrder(ord);
+                    op.setQuantity(set2.getInt("quantidade"));
+                    op.setComment(set2.getString("observacao"));
+                    ops.add(op);
+                }
+                ord.setOrderProducts(ops);
+                
+                list.add((T)ord);
+            }
         } else {
             throw new IllegalArgumentException("Classe não tratada no DAO");
         }
