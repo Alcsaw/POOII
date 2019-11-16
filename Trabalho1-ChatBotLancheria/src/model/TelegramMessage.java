@@ -10,17 +10,17 @@ package model;
  * @author erico
  */
 public class TelegramMessage {
-    private long updateId;
+    private int updateId;
     private int messageId;
     private String senderFirstName;
     private String senderLastName;
-    private int senderId;
+    private String senderId;
     private String text;
 
     public TelegramMessage() {
     }
 
-    public TelegramMessage(long updateId, int messageId, String senderFirstName, String senderLastName, int senderId, String text) {
+    public TelegramMessage(int updateId, int messageId, String senderFirstName, String senderLastName, String senderId, String text) {
         this.updateId = updateId;
         this.messageId = messageId;
         this.senderFirstName = senderFirstName;
@@ -29,11 +29,11 @@ public class TelegramMessage {
         this.text = text;
     }
 
-    public long getUpdateId() {
+    public int getUpdateId() {
         return updateId;
     }
 
-    public void setUpdateId(long updateId) {
+    public void setUpdateId(int updateId) {
         this.updateId = updateId;
     }
 
@@ -61,11 +61,11 @@ public class TelegramMessage {
         this.senderLastName = senderLastName;
     }
 
-    public int getSenderId() {
+    public String getSenderId() {
         return senderId;
     }
 
-    public void setSenderId(int senderId) {
+    public void setSenderId(String senderId) {
         this.senderId = senderId;
     }
 

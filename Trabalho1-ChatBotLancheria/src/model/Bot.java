@@ -39,7 +39,7 @@ public class Bot {
     }
     
     public String receiveMessage(int updateID){
-        String url = String.format("https://api.telegram.org/bot%s/getUpdates?offset=%d", token, updateID+1);
+        String url = String.format("https://api.telegram.org/bot%s/getUpdates?offset=%d", token, updateID);
         String ret = ""; //declara variável que é a mensagem inteira recebida em JSON
         try{
             URL telegram = new URL(url); //instancia uma url
@@ -70,7 +70,7 @@ public class Bot {
             JSONObject curMsgObj = curResultObj.getJSONObject("message");
             JSONObject curMsgFrom = curMsgObj.getJSONObject("from");
             
-            telegramMsg.setSenderId((int)curMsgFrom.get("id"));
+            telegramMsg.setSenderId(curMsgFrom.get("id").toString());
             telegramMsg.setUpdateId((int)curResultObj.get("update_id"));
             telegramMsg.setSenderFirstName(curMsgFrom.get("first_name").toString());
             telegramMsg.setSenderLastName(curMsgFrom.get("last_name").toString());
