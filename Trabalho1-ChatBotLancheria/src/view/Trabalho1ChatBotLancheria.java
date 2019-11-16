@@ -38,6 +38,7 @@ public class Trabalho1ChatBotLancheria {
                 System.out.println(message);
                 ArrayList<TelegramMessage> msgs = bot.parseMessage(message);
                 for(TelegramMessage tm : msgs) {
+                    // Verifica se cliente existe, adicionando no banco caso necessario
                     System.out.println(tm.getText());
                     if(!Conversation.conversationAlreadyExists(conversations, tm.getSenderFirstName() + " " + tm.getSenderLastName())) {
                         Conversation newConv = new Conversation();

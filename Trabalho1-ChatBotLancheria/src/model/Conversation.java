@@ -55,12 +55,12 @@ public class Conversation {
             case GREETING:
                 order.setClient(cliDAO.getByNameOrDescription(Client.class, message.getText()));
                 bot.sendMessage(message.getSenderId(), Constants.GREETING_MSG);
-                bot.sendMessage(message.getSenderId(), Constants.CATEGORY_MSG);
+                bot.sendMessage(message.getSenderId(), Constants.CategoryMsg());
                 this.state = ConversationStateEnum.PRODUCT_CHOICE;
                 break;
             case PRODUCT_CHOICE:
                 this.category = categDAO.getByNameOrDescription(Category.class, message.getText());
-                bot.sendMessage(message.getSenderId(), Constants.PRODUCT_MSG);
+                bot.sendMessage(message.getSenderId(), Constants.ProductsMsg(this.category));
                 this.state = ConversationStateEnum.QUANTITY_CHOICE;
                 break;
             case QUANTITY_CHOICE:

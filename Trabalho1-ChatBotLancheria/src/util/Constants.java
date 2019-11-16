@@ -5,18 +5,41 @@
  */
 package util;
 
+import DataAccessLayer.DAO;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import model.*;
+
 /**
  *
  * @author erico
  */
 public final class Constants {
     public static final String GREETING_MSG = "Olá";
-    public static final String CATEGORY_MSG = "Por favor, escolha a categoria: \n"
-            + "1 - Hambuergueres\n2 - Pizzas\n3 - Bebidas";
-    public static final String PRODUCT_MSG = "Escolha o produto que deseja: \n"
-            + "1 - Pizza 4 queijos\n2 - Pizza de calabresa\n3 - Pizza de frango";
     public static final String QUANTITY_MSG = "Quantas unidades?";
     public static final String COMMENT_MSG = "Possui alguma observação quanto à este produto?";
     public static final String ADD_PROD_MSG = "Deseja adicionar mais algum produto?";
     public static final String THANK_MSG = "Seu pedido ficará pronto em 40 minutos, obrigado pela preferência";
+    
+    public static final String CategoryMsg() throws ClassNotFoundException, SQLException {
+        DAO<Category> dao = new DAO<Category>();
+        ArrayList<Category> categs = dao.get(Category.class);
+        
+        String str = "Por favor, escolha a categoria:\n";
+        for (int i = 0; i < categs.size(); i++) {
+            str += i + " - " + categs.get(i).getDescription() + "\n";
+        }
+        return str;
+    }
+    
+    public static final String ProductsMsg(Category selectedCateg) throws ClassNotFoundException, SQLException {
+        DAO<Product> dao = new DAO<Product>();
+        ArrayList<Product> prods = dao.getProductsFromCategory(selectedCateg);
+        
+        String str = "Por favor, escolha o produto:\n";
+        for (int i = 0; i < prods.size(); i++) {
+            str += i + " - " + prods.get(i).getDescription() + "\n";
+        }
+        return str;
+    }
 }

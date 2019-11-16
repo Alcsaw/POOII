@@ -152,9 +152,10 @@ public class DAO<T> {
             st.setDouble(3, prod.getPrice());
         } else if(obj instanceof Client) {
             Client cli = (Client)obj;
-            sql += " cliente (nome) values (?) ";
+            sql += " cliente (id, nome) values (?, ?) ";
             st = connection.preparedStatement(sql);
-            st.setString(1, cli.getName());
+            st.setInt(1, cli.getId());
+            st.setString(2, cli.getName());
         } else if(obj instanceof Order) {
             Order order = (Order)obj;
             sql += " pedido (cliente_id, data, finalizado, entregue) values (?,NOW(),?,?) ";
