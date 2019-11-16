@@ -73,6 +73,56 @@ public class DAO<T> {
                 
                 list.add((T)prod);
             }
+        } else if(classe == Order.class) {
+            sql += " pedido ";
+            preparedStatement = connection.preparedStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                
+                Order ord = new Order();
+                ord.setId(resultSet.getInt("id"));
+                ord.setDate(resultSet.getString("data"));
+                ord.setDone(resultSet.getInt("finalizado") == 1);
+                ord.setDelivered(resultSet.getInt("entregue") == 1);
+                
+                // busca o cliente do pedido
+                ArrayList<T> clients = this.get(Client.class);
+                for(T c : clients) {
+                    if(((Client)c).getId() == resultSet.getInt("cliente_id")) {
+                        ord.setClient((Client)c);
+                    }
+                }
+                
+                // busca lista de todos os produtos com suas categorias
+                ArrayList<T> prods = this.get(Product.class);
+                
+                // busca e materializa os order_products
+                sql = "select * from pedido_item where pedido_item.pedido_id=?";
+                PreparedStatement st2 = connection.preparedStatement(sql);
+                st2.setInt(1, ord.getId());
+                ResultSet set2 = st2.executeQuery();
+                ArrayList<OrderProduct> ops = new ArrayList<OrderProduct>();
+                
+                while(set2.next()) {
+                    OrderProduct op = new OrderProduct();
+                    // pega id do produto contido nesta linah do pedido_item
+                    int productId = set2.getInt("produto_id");
+                    // encontra o produto pelo id na lista prods
+                    Product auxProd = null;
+                    for(T p : prods) {
+                        if(((Product)p).getId() == productId) {
+                            op.setProduct((Product)p);
+                        }
+                    }
+                    op.setOrder(ord);
+                    op.setQuantity(set2.getInt("quantidade"));
+                    op.setComment(set2.getString("observacao"));
+                    ops.add(op);
+                }
+                ord.setOrderProducts(ops);
+                
+                list.add((T)ord);
+            }
         } else {
             throw new IllegalArgumentException("Classe não tratada no DAO");
         }
@@ -105,7 +155,24 @@ public class DAO<T> {
             sql += " cliente (nome) values (?) ";
             st = connection.preparedStatement(sql);
             st.setString(1, cli.getName());
-        } else {
+        } else if(obj instanceof Order) {
+            Order order = (Order)obj;
+            sql += " pedido (cliente_id, data, finalizado, entregue) values (?,NOW(),?,?) ";
+            st = connection.preparedStatement(sql);
+            st.setInt(1, order.getClient().getId());
+            st.setInt(2, order.isDone() ? 1 : 0);
+            st.setInt(3, order.isDelivered() ? 1 : 0);
+        } else if(obj instanceof OrderProduct) {
+            OrderProduct op = (OrderProduct)obj;
+            sql += " pedido_item (pedido_id, produto_id, quantidade, preco, observacao) values (?,?,?,?,?) ";
+            st = connection.preparedStatement(sql);
+            st.setInt(1, op.getOrder().getId());
+            st.setInt(2, op.getProduct().getId());
+            st.setInt(3, op.getQuantity());
+            st.setDouble(4, op.getTotalPrice());
+            st.setString(5, op.getComment());
+        }
+        else {
             throw new IllegalArgumentException("Classe não tratada para acesso ao BD");
         }
               
@@ -134,6 +201,13 @@ public class DAO<T> {
             st.setString(2, prod.getDescription());
             st.setDouble(3, prod.getPrice());
             st.setInt(4, prod.getId());
+        } else if(obj instanceof Order) {
+            String sql = "UPDATE pedido SET finalizado=?, entregue=? WHERE pedido.id=?";
+            Order order = (Order)obj;
+            st = connection.preparedStatement(sql);
+            st.setInt(1, order.isDone() ? 1 : 0);
+            st.setInt(2, order.isDelivered() ? 1 : 0);
+            st.setInt(3, order.getId());
         } else {
             throw new IllegalArgumentException("Classe não tratada para acesso ao BD");
         }
