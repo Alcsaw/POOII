@@ -16,7 +16,6 @@ import util.*;
 public class Conversation {
     private ArrayList<TelegramMessage> messages;
     private Client client;
-
     public Conversation() {
         this.messages = new ArrayList<TelegramMessage>();
         this.client = new Client();
@@ -37,6 +36,7 @@ public class Conversation {
     }
     
     public void respond(Bot bot) throws ClassNotFoundException, SQLException {
+        // Mensagem que será enviada pelo bot
         TelegramMessage response = new TelegramMessage();
         response.setMessageId(-1);
         response.setSenderFirstName("Bot");
@@ -77,6 +77,8 @@ public class Conversation {
                 responseMsg = Constants.CategoryMsg();
             } else {
                 responseMsg = Constants.THANK_MSG;
+                // Ler todo o historico de mensagens, gerar a order e salvar no banco
+                // Após, apagar o historico de mensagens para que o cliente possa fazer novoos pedidos
             }
         } 
         

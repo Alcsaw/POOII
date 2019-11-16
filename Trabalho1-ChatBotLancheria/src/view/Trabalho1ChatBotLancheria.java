@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.*;
+import com.opencsv.*;
+import java.io.FileWriter;
+import java.io.IOException;
 import org.json.*;
 
 public class Trabalho1ChatBotLancheria {
@@ -21,6 +24,22 @@ public class Trabalho1ChatBotLancheria {
             
             Bot bot = new Bot("1035768730:AAG1d_Mw78fuKv-8cXjhK00v_bDlmnJdUKo");
             
+            // Teste da importação para o excel, gera o arquivo na raiz do projeto
+            ArrayList<Order> orders = orderDAO.get(Order.class);
+            CSVWriter writer;
+            try {
+                writer = new CSVWriter(new FileWriter("./pedidos.csv"),',');
+                writer.writeNext(new String[] { "Id", "Data", "Finalizado", "Entregue", "Nome do cliente" });
+                for (Order or : orders) {
+                    writer.writeNext(or.toCSVString());
+                }
+                writer.close();
+                orders.clear();
+            } catch (IOException ex) {
+                Logger.getLogger(Trabalho1ChatBotLancheria.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            // Codigo do bot
             int updateID = 1;
             int cont = 0;
             ArrayList<Conversation> conversations = new ArrayList<Conversation>();

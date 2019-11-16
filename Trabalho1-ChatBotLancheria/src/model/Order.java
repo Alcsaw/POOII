@@ -87,6 +87,8 @@ public class Order {
         this.delivered = delivered;
     }
     
-    
+    public String[] toCSVString() {
+        return new String[] {this.id + "", this.date, this.done + "", this.delivered + "", this.client.getName()};
+    }
     
 }
