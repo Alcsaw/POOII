@@ -23,7 +23,7 @@ public class Bot {
     }
      
     public void sendMessage(String userID, String message){
-        String url = String.format("https://api.telegram.org/bot%s/sendMessage?chat_id=%s&text=%s", token, userID, message);
+        String url = String.format("https://api.telegram.org/bot%s/sendMessage?chat_id=%s&text=%s", token, userID, this.encode(message));
         try {
             URL telegram = new URL(url); //instancia uma url
             URLConnection con = telegram.openConnection(); //abre a URL que é a mensagem a ser enviada ao usuário

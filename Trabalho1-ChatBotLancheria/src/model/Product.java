@@ -13,6 +13,7 @@ public class Product {
     private int quantity;
 
     public Product() {
+        this.category = new Category();
     }
 
     public Product(int id, Category category, String description, String imagePath, double price) {

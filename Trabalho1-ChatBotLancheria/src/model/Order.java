@@ -22,7 +22,8 @@ public class Order {
     private boolean delivered;
 
     public Order() {
-        
+        this.client = new Client();
+        this.orderProducts = new ArrayList<OrderProduct>();
     }
     
     public Order(int id, Client client, ArrayList<OrderProduct> orderProducts, String date, boolean done, boolean delivered) {
@@ -32,6 +33,10 @@ public class Order {
         this.date = date;
         this.done = done;
         this.delivered = delivered;
+    }
+    
+    public void addOrderProduct(OrderProduct op) {
+        this.orderProducts.add(op);
     }
 
     public int getId() {

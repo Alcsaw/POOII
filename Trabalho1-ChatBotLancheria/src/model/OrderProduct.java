@@ -16,7 +16,7 @@ public class OrderProduct {
     private String comment;
 
     public OrderProduct() {
-        
+        this.product = new Product();
     }
 
     public OrderProduct(Product product, Order order, int quantity, String comment) {

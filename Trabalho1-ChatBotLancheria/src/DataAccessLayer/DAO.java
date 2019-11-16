@@ -254,4 +254,32 @@ public class DAO<T> {
         st.close(); // close do statement
         return prodList;
     }
+    
+    public T getByNameOrDescription(Class className, String str) throws SQLException {
+        if(className == Product.class) {
+            ArrayList<T> prods = this.get(Product.class);
+            for(T p : prods) {
+                if(((Product)p).getDescription().equals(str)) {
+                    return p;
+                }
+            }
+        } else if(className == Category.class) {
+            ArrayList<T> categs = this.get(Category.class);
+            for(T c : categs) {
+                if(((Category)c).getDescription().equals(str)) {
+                    return c;
+                }
+            }
+        } else if(className == Client.class) {
+            ArrayList<T> clis = this.get(Client.class);
+            for(T c : clis) {
+                if(((Client)c).getName().equals(str)) {
+                    return c;
+                }
+            }
+        } else {
+            return null;
+        }
+        return null;
+    }
 }

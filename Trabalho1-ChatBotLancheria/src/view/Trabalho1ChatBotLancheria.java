@@ -27,8 +27,10 @@ public class Trabalho1ChatBotLancheria {
             DAO<OrderProduct> opDAO = new DAO<OrderProduct>();
             
             Bot bot = new Bot("1035768730:AAG1d_Mw78fuKv-8cXjhK00v_bDlmnJdUKo");
+            
             int updateID = 1;
             int cont = 0;
+            ArrayList<Conversation> conversations = new ArrayList<Conversation>();
             while(updateID != 0) {
                 cont++;
                 System.out.println(cont);
@@ -36,19 +38,15 @@ public class Trabalho1ChatBotLancheria {
                 System.out.println(message);
                 ArrayList<TelegramMessage> msgs = bot.parseMessage(message);
                 for(TelegramMessage tm : msgs) {
-                    System.out.println("Msg Id: "+tm.getMessageId());
-                    System.out.println("Sender id: " + tm.getSenderId());
-                    System.out.println("Sender First: " + tm.getSenderFirstName());
-                    System.out.println("Sender Last: " + tm.getSenderLastName());
-                    System.out.println("UpdateID: " + tm.getUpdateId());
-                    System.out.println("Text: " + tm.getText());
-                    if(tm.getText().equals("Oi")) {
-                        System.out.println("Vai mandar msg");
-                        bot.sendMessage(tm.getSenderId(), "Buenas");
+                    System.out.println(tm.getText());
+                    if(!Conversation.conversationAlreadyExists(conversations, tm.getSenderFirstName() + " " + tm.getSenderLastName())) {
+                        Conversation newConv = new Conversation();
+                        newConv.getOrder().setClient(clientDAO.getByNameOrDescription(Client.class, tm.getText()));
+                        conversations.add(newConv);
+                        newConv.handleClientMessage(tm, bot);
                     }
                 }
                 updateID = msgs.isEmpty() ? 1 : msgs.get(msgs.size() - 1).getUpdateId();
-                System.out.println("============ updateId: " + updateID);
                 Thread.sleep(1000);
             }
             
