@@ -283,4 +283,16 @@ public class DAO<T> {
         }
         return null;
     }
+
+    public T getById(Class className, int id) throws SQLException {
+        if(className == Client.class) {
+            ArrayList<T> clis = this.get(Client.class);
+            for(T c : clis) {
+                if(((Client)c).getId() == id) {
+                    return c;
+                }
+            }
+        }
+        return null;
+    } 
 }

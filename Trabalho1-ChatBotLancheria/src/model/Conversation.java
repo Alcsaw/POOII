@@ -14,116 +14,96 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import util.*;
 public class Conversation {
-    private ConversationStateEnum state;
-    private Order order;
-    private int lastMessageId;
-    private Category category;
-    private Product product;
-    private OrderProduct orderProduct;
-    
+    private ArrayList<TelegramMessage> messages;
+    private Client client;
+
     public Conversation() {
-        this.state = ConversationStateEnum.GREETING;
-        this.order = new Order();
+        this.messages = new ArrayList<TelegramMessage>();
+        this.client = new Client();
     }
 
-    public Conversation(ConversationStateEnum state, int lastMessageId) {
-        this.state = state;
-        this.lastMessageId = lastMessageId;
+    public Conversation(ArrayList<TelegramMessage> messages, Client client) {
+        this.messages = messages;
+        this.client = client;
     }
     
-    public static boolean conversationAlreadyExists(ArrayList<Conversation> convs, String clientName) {
-        for(Conversation c : convs) {
-            if(c.getOrder() != null) {
-                if(c.getOrder().getClient() != null) {
-                    if(c.getOrder().getClient().getName() != null) {
-                        if(c.getOrder().getClient().getName().equals(clientName)) {
-                            return true;
-                        }
-                    }
-                }
+    public static Conversation findExistingConversation(ArrayList<Conversation> conversations, Client c) {
+        for(Conversation conv : conversations) {
+            if(conv.getClient().getId() == c.getId()) {
+                return conv;
             }
         }
-        return false;
+        return null;
     }
     
-    public void handleClientMessage(TelegramMessage message, Bot bot) throws SQLException, ClassNotFoundException {
-        DAO<Category> categDAO = new DAO<Category>();
-        DAO<Product> prodDAO = new DAO<Product>();
-        DAO<Client> cliDAO = new DAO<Client>();
+    public void respond(Bot bot) throws ClassNotFoundException, SQLException {
+        TelegramMessage response = new TelegramMessage();
+        response.setMessageId(-1);
+        response.setSenderFirstName("Bot");
+        response.setSenderLastName("Bot");
+        response.setSenderId("-1");
+        response.setUpdateId(1);
         
-        if(null != this.state) switch (this.state) {
-            case GREETING:
-                order.setClient(cliDAO.getByNameOrDescription(Client.class, message.getText()));
-                bot.sendMessage(message.getSenderId(), Constants.GREETING_MSG);
-                bot.sendMessage(message.getSenderId(), Constants.CategoryMsg());
-                this.state = ConversationStateEnum.PRODUCT_CHOICE;
-                break;
-            case PRODUCT_CHOICE:
-                this.category = categDAO.getByNameOrDescription(Category.class, message.getText());
-                bot.sendMessage(message.getSenderId(), Constants.ProductsMsg(this.category));
-                this.state = ConversationStateEnum.QUANTITY_CHOICE;
-                break;
-            case QUANTITY_CHOICE:
-                this.product = prodDAO.getByNameOrDescription(Product.class, message.getText());
-                bot.sendMessage(message.getSenderId(), Constants.QUANTITY_MSG);
-                this.state = ConversationStateEnum.COMMENTS;
-                break;
-            case COMMENTS:
-                OrderProduct op = new OrderProduct();
-                op.setOrder(order);
-                op.setProduct(product);
-                op.setQuantity(Integer.parseInt(message.getText()));
-                this.order.addOrderProduct(op);
-                bot.sendMessage(message.getSenderId(), Constants.COMMENT_MSG);
-                this.state = ConversationStateEnum.ANOTHER_PRODUCT;
-                break;
-            case ANOTHER_PRODUCT:
-                this.order.getOrderProducts().get(this.order.getOrderProducts().size() - 1).setComment(message.getText());
-                bot.sendMessage(message.getSenderId(), Constants.ADD_PROD_MSG);
-                this.state = ConversationStateEnum.THANKS;
-                break;
-            case THANKS:
-                if(message.getText().equals("Sim")) {
-                    this.state = ConversationStateEnum.GREETING;
-                } else {
-                    bot.sendMessage(message.getSenderId(), Constants.ADD_PROD_MSG);
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    public int getLastMessageId() {
-        return lastMessageId;
-    }
-
-    public void setLastMessageId(int lastMessageId) {
-        this.lastMessageId = lastMessageId;
-    }
-
-    
-    
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
+        // pega a ultima msg do bot
+        // pega a ultima msg do cliente
+        // baseado nelas, decide qual mensagem enviar
+        // monta mensagem a ser enviada (resposta) e salva no historico
+        // envia mensagem
+        // trata caso tenha concluido a conversa
+        TelegramMessage lastBotMsg = this.messages.size() > 2 ? this.messages.get(this.messages.size() - 2) : null;
+        TelegramMessage lastClientMsg = this.messages.get(this.messages.size() - 1);
+        
+        // Choose response
+        String responseMsg = "";
+        if(lastBotMsg == null) {
+            responseMsg = Constants.GREETING_MSG + "\n" + Constants.CategoryMsg();
+        } else if(lastBotMsg.getText().contains("categoria")) {
+            // envia produtos
+            DAO<Category> dao = new DAO<Category>();
+            responseMsg = Constants.ProductsMsg(dao.getByNameOrDescription(Category.class, "Pizzas"));
+        } else if(lastBotMsg.getText().contains("Por favor, escolha o produto")) {
+            // pergunta quantidade
+            responseMsg = Constants.QUANTITY_MSG;
+        } else if(lastBotMsg.getText().contains("Quantas unidades")) {
+            // pergunta observacao
+            responseMsg = Constants.COMMENT_MSG;
+        } else if(lastBotMsg.getText().contains("Possui alguma observação quanto à este produto?")) {
+            // pergunta mais algum produto
+            responseMsg = Constants.ADD_PROD_MSG;
+        } else if(lastBotMsg.getText().contains("Deseja adicionar mais algum produto?")) {
+            // se sim, manda mensagem de categorias
+            // senao, manda mensagem de término, gera order e salva no banco
+            if(lastClientMsg.getText().toLowerCase().equals("sim")) {
+                responseMsg = Constants.CategoryMsg();
+            } else {
+                responseMsg = Constants.THANK_MSG;
+            }
+        } 
+        
+        bot.sendMessage(this.client.getId() + "", responseMsg);
+        response.setText(responseMsg);
+        this.messages.add(response);
     }
     
-    public void addProductToOrder(OrderProduct op) {
-        this.order.addOrderProduct(op);
+    public void addMessage(TelegramMessage msg) {
+        this.messages.add(msg);
     }
 
-    public ConversationStateEnum getState() {
-        return state;
+    public ArrayList<TelegramMessage> getMessages() {
+        return messages;
     }
 
-    public void setState(ConversationStateEnum state) {
-        this.state = state;
+    public void setMessages(ArrayList<TelegramMessage> messages) {
+        this.messages = messages;
     }
 
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
     
     
 }

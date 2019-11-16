@@ -8,15 +8,8 @@ import java.util.logging.Logger;
 import model.*;
 import org.json.*;
 
-/**
- *
- * @author alcsaw
- */
 public class Trabalho1ChatBotLancheria {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) throws InterruptedException {
         try {
             // TODO code application logic here
@@ -36,27 +29,41 @@ public class Trabalho1ChatBotLancheria {
                 System.out.println(cont);
                 String message = bot.receiveMessage(updateID + 1);
                 System.out.println(message);
+                
+                // Lista de conversas ativas
                 ArrayList<TelegramMessage> msgs = bot.parseMessage(message);
                 for(TelegramMessage tm : msgs) {
-                    // Verifica se cliente existe, adicionando no banco caso necessario
-                    System.out.println(tm.getText());
-                    if(!Conversation.conversationAlreadyExists(conversations, tm.getSenderFirstName() + " " + tm.getSenderLastName())) {
-                        Conversation newConv = new Conversation();
-                        newConv.getOrder().setClient(clientDAO.getByNameOrDescription(Client.class, tm.getText()));
-                        conversations.add(newConv);
-                        newConv.handleClientMessage(tm, bot);
+                    // Procura cliente no banco
+                    // se não existe, cria e salva
+                    // adiciona cliente na lista de conversas 
+                    // salva mensagem do cliente na lista de conversas 
+                    // envia resposta para ultima mensagem da lista
+                    Client client = clientDAO.getById(Client.class, Integer.parseInt(tm.getSenderId()));
+                    if(client == null) {
+                        client = new Client();
+                        client.setId(Integer.parseInt(tm.getSenderId()));
+                        client.setName(tm.getSenderFirstName() + " " + tm.getSenderLastName());
+                        clientDAO.insert(client);
                     }
+                    Conversation conversation = Conversation.findExistingConversation(conversations, client);
+                    if(conversation == null) {
+                        conversation = new Conversation();
+                        conversation.setClient(client);
+                    } 
+                    conversation.addMessage(tm);
+                    conversations.add(conversation);
+                    conversation.respond(bot);
                 }
+                
+                // Reseta o updateID para continuar ouvindo
                 updateID = msgs.isEmpty() ? 1 : msgs.get(msgs.size() - 1).getUpdateId();
+                // Pausa por 1 segundo entre iterações
                 Thread.sleep(1000);
             }
-            
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Trabalho1ChatBotLancheria.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
             Logger.getLogger(Trabalho1ChatBotLancheria.class.getName()).log(Level.SEVERE, null, ex);
         }
-                
     }
-    
 }
