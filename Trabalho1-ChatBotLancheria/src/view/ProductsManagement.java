@@ -1,5 +1,13 @@
 package view;
 
+import DataAccessLayer.DAO;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
+import model.Product;
+
 /**
  *
  * @author m98567
@@ -10,7 +18,14 @@ public class ProductsManagement extends javax.swing.JFrame {
      * Creates new form CategoryManagement
      */
     public ProductsManagement() {
-        initComponents();
+        try {
+            initComponents();
+            loadTable();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ProductsManagement.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductsManagement.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -39,9 +54,17 @@ public class ProductsManagement extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Descrição", "Preço", "Categoria"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tableProducts);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -57,6 +80,11 @@ public class ProductsManagement extends javax.swing.JFrame {
         buttonDeleteProduct.setText("Excluir Produto");
 
         buttonAddProduct.setText("Adicionar Produto");
+        buttonAddProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonAddProductActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -100,6 +128,29 @@ public class ProductsManagement extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_buttonEditProductActionPerformed
 
+    private void buttonAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddProductActionPerformed
+        // TODO add your handling code here:
+        FormAddProduct form = new FormAddProduct();
+        form.setVisible(true);
+    }//GEN-LAST:event_buttonAddProductActionPerformed
+
+    private void loadTable() throws ClassNotFoundException, SQLException {
+        DefaultTableModel model = (DefaultTableModel) tableProducts.getModel();
+        model.setRowCount(0);
+
+        ArrayList<Product> lst = new DAO<Product>().get(Product.class);
+
+        for (int i = 0; i < lst.size(); i++) {
+            //adicionar cada atendimento no JTable
+            Object[] obj = new Object[4];//vetor para as 2 colunas
+            obj[0] = lst.get(i).getId();
+            obj[1] = lst.get(i).getDescription();
+            obj[2] = lst.get(i).getPrice();
+            obj[3] = lst.get(i).getCategory().getDescription();
+            model.addRow(obj);
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
