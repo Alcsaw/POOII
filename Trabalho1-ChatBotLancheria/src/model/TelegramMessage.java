@@ -13,18 +13,16 @@ public class TelegramMessage {
     private int updateId;
     private int messageId;
     private String senderFirstName;
-    private String senderLastName;
     private String senderId;
     private String text;
 
     public TelegramMessage() {
     }
 
-    public TelegramMessage(int updateId, int messageId, String senderFirstName, String senderLastName, String senderId, String text) {
+    public TelegramMessage(int updateId, int messageId, String senderFirstName, String senderId, String text) {
         this.updateId = updateId;
         this.messageId = messageId;
         this.senderFirstName = senderFirstName;
-        this.senderLastName = senderLastName;
         this.senderId = senderId;
         this.text = text;
     }
@@ -51,14 +49,6 @@ public class TelegramMessage {
 
     public void setSenderFirstName(String senderFirstName) {
         this.senderFirstName = senderFirstName;
-    }
-
-    public String getSenderLastName() {
-        return senderLastName;
-    }
-
-    public void setSenderLastName(String senderLastName) {
-        this.senderLastName = senderLastName;
     }
 
     public String getSenderId() {

@@ -292,6 +292,20 @@ public class DAO<T> {
                     return c;
                 }
             }
+        } else if(className == Category.class) {
+            ArrayList<T> cats = this.get(Category.class);
+            for(T c : cats) {
+                if(((Category)c).getId() == id) {
+                    return c;
+                }
+            }
+        } else if(className == Product.class) {
+            ArrayList<T> prods = this.get(Product.class);
+            for(T p : prods) {
+                if(((Product)p).getId() == id) {
+                    return p;
+                }
+            }
         }
         return null;
     } 
