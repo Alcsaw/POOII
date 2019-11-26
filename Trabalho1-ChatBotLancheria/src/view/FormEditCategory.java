@@ -121,12 +121,11 @@ public class FormEditCategory extends javax.swing.JFrame {
                     "ERROR", JOptionPane.ERROR_MESSAGE);
         } else {
             try {
-                DAO dao = new DAO();
+                DAO<Category> dao = new DAO<Category>();
                 
                 Category category = new Category();
-                
                 category.setId(id);
-                category.setDescription(description);
+                category.setDescription(textFieldCategoryDescription.getText());
                 
                 Boolean success = dao.update(category);
                 
