@@ -20,6 +20,8 @@ public final class Constants {
     public static final String COMMENT_MSG = "Possui alguma observação quanto à este produto?";
     public static final String ADD_PROD_MSG = "Deseja adicionar mais algum produto?";
     public static final String THANK_MSG = "Seu pedido ficará pronto em 40 minutos, obrigado pela preferência";
+    public static final String DIDNT_UNDERSTAND_CATEGORY = "Não entendi, por favor, digite o número da categoria de novo";
+    public static final String DIDNT_UNDERSTAND_PRODUCT = "Não entendi, por favor, digite o número do produto novamente";
     
     public static final String CategoryMsg() throws ClassNotFoundException, SQLException {
         DAO<Category> dao = new DAO<Category>();
@@ -27,7 +29,7 @@ public final class Constants {
         
         String str = "Por favor, escolha a categoria:\n";
         for (int i = 0; i < categs.size(); i++) {
-            str += i + " - " + categs.get(i).getDescription() + "\n";
+            str += categs.get(i).getId() + " - " + categs.get(i).getDescription() + "\n";
         }
         return str;
     }
@@ -38,7 +40,7 @@ public final class Constants {
         
         String str = "Por favor, escolha o produto:\n";
         for (int i = 0; i < prods.size(); i++) {
-            str += i + " - " + prods.get(i).getDescription() + "\n";
+            str += prods.get(i).getId() + " - " + prods.get(i).getDescription() + "\n";
         }
         return str;
     }

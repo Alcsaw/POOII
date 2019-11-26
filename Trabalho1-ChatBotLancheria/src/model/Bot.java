@@ -1,5 +1,6 @@
 package model;
 
+import DataAccessLayer.DAO;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,6 +10,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +22,53 @@ public class Bot {
     //construtor
      public Bot(String token){ 
         this.token = token;
+    }
+     
+    public void startListening() throws ClassNotFoundException, SQLException, InterruptedException {
+        DAO<Product> productDAO = new DAO<Product>();
+        DAO<Category> categoryDAO = new DAO<Category>();
+        DAO<Client> clientDAO = new DAO<Client>();
+        DAO<Order> orderDAO = new DAO<Order>();
+        DAO<OrderProduct> opDAO = new DAO<OrderProduct>();
+        int updateID = 1;
+        int cont = 0;
+        ArrayList<Conversation> conversations = new ArrayList<Conversation>();
+        while(updateID != 0) {
+            cont++;
+            System.out.println(cont);
+            String message = this.receiveMessage(updateID + 1);
+            System.out.println(message);
+
+            // Lista de conversas ativas
+            ArrayList<TelegramMessage> msgs = this.parseMessage(message);
+            for(TelegramMessage tm : msgs) {
+                // Procura cliente no banco
+                // se não existe, cria e salva
+                // adiciona cliente na lista de conversas 
+                // salva mensagem do cliente na lista de conversas 
+                // envia resposta para ultima mensagem da lista
+                Client client = clientDAO.getById(Client.class, Integer.parseInt(tm.getSenderId()));
+                if(client == null) {
+                    client = new Client();
+                    client.setId(Integer.parseInt(tm.getSenderId()));
+                    client.setName(tm.getSenderFirstName());
+                    clientDAO.insert(client);
+                }
+                Conversation conversation = Conversation.findExistingConversation(conversations, client);
+                if(conversation == null) {
+                    conversation = new Conversation();
+                    conversation.setClient(client);
+                } 
+                conversation.addMessage(tm);
+                conversations.add(conversation);
+                conversation.respond(this);
+            }
+
+            // Reseta o updateID para continuar ouvindo
+            updateID = msgs.isEmpty() ? 1 : msgs.get(msgs.size() - 1).getUpdateId();
+            // Pausa por 1 segundo entre iterações
+            Thread.sleep(1000);
+        }
     }
      
     public void sendMessage(String userID, String message){
@@ -73,7 +122,6 @@ public class Bot {
             telegramMsg.setSenderId(curMsgFrom.get("id").toString());
             telegramMsg.setUpdateId((int)curResultObj.get("update_id"));
             telegramMsg.setSenderFirstName(curMsgFrom.get("first_name").toString());
-            telegramMsg.setSenderLastName(curMsgFrom.get("last_name").toString());
             telegramMsg.setMessageId((int)curMsgObj.get("message_id"));
             telegramMsg.setText(curMsgObj.get("text").toString());
             
