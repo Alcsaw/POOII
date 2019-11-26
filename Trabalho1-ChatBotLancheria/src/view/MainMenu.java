@@ -106,9 +106,9 @@ public class MainMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonProductsManagementActionPerformed
 
     private void buttonOrderInquiryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOrderInquiryActionPerformed
-        OrderInquiry orderInquiry = new OrderInquiry();
-        orderInquiry.setVisible(true);
-        orderInquiry.setLocationRelativeTo(this);
+        //OrderInquiry orderInquiry = new OrderInquiry();
+        //orderInquiry.setVisible(true);
+        //orderInquiry.setLocationRelativeTo(this);
     }//GEN-LAST:event_buttonOrderInquiryActionPerformed
 
     /**
