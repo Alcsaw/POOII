@@ -6,8 +6,12 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import model.Order;
+import model.OrderProduct;
 
 /**
  *
@@ -22,6 +26,7 @@ public class OrderInquiry extends javax.swing.JFrame {
      */
     public OrderInquiry() {
         initComponents();
+        addListeners();
     }
 
     /**
@@ -168,7 +173,7 @@ public class OrderInquiry extends javax.swing.JFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Float.class, java.lang.Float.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false, false, false
@@ -248,7 +253,29 @@ public class OrderInquiry extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonRefreshActionPerformed
 
     private void buttonFinishOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonFinishOrderActionPerformed
-        // TODO add your handling code here:
+        try {
+            int selectedID = (int) tableOrders.getValueAt(tableOrders.getSelectedRow(), 0);
+            
+            DAO dao = new DAO();
+            
+            for (Order order : orders) {
+                if (order.getId() == selectedID) {
+                    order.setDelivered(true);
+                    
+                    dao.update(order);
+                    break;
+                }
+            }
+            
+            loadTableOrders();
+            loadTableItemsPerOrder(0);
+            
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(OrderInquiry.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderInquiry.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }//GEN-LAST:event_buttonFinishOrderActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -260,7 +287,7 @@ public class OrderInquiry extends javax.swing.JFrame {
                             "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_formWindowOpened
-
+/**/
     /**
      * Loads the content of the table
      * @throws ClassNotFoundException
@@ -287,6 +314,65 @@ public class OrderInquiry extends javax.swing.JFrame {
 
             model.addRow(obj);
         }
+    }
+    
+    /**
+     * Loads the content of the table
+     * @param id
+     * @throws ClassNotFoundException
+     * @throws SQLException 
+     */
+    public void loadTableItemsPerOrder(int id) throws ClassNotFoundException, SQLException {
+        DefaultTableModel model = (DefaultTableModel) tableItemsPerOrder.getModel();
+        model.setRowCount(0);//limpar as linhas antigas da jTable
+        
+        if (id != 0) {
+            ArrayList<OrderProduct> orderProducts = new ArrayList<>();
+
+            for (Order order : orders) {
+                if (order.getId() == id) {
+                    orderProducts = order.getOrderProducts();
+                    break;
+                }
+            }
+
+            for (int i = 0; i < orderProducts.size(); i++) {
+                //adicionar cada atendimento no JTable
+                Object[] obj = new Object[6];//vetor para as 6 colunas
+                obj[0] = orderProducts.get(i).getProduct().getId();
+                obj[1] = orderProducts.get(i).getProduct().getDescription();
+                obj[2] = orderProducts.get(i).getComment();
+                obj[3] = orderProducts.get(i).getQuantity();
+                obj[4] = orderProducts.get(i).getProduct().getPriceString();
+                obj[5] = orderProducts.get(i).getTotalPriceString();
+
+                model.addRow(obj);
+            }
+        }
+    }
+    
+    private void addListeners() {
+        tableOrders.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            public void valueChanged(ListSelectionEvent event) {
+                try {
+                    int row = tableOrders.getSelectedRow();
+                    if (row != -1) {
+                        int selectedID = (int) tableOrders.getValueAt(row, 0);
+                        loadTableItemsPerOrder(selectedID);
+                        System.out.println(selectedID);
+                    }
+                } catch (ClassNotFoundException | SQLException ex) {
+                    Logger.getLogger(OrderInquiry.class.getName()).log(Level.SEVERE, null, ex);
+                    /*JOptionPane.showMessageDialog(this, ex.toString(),
+                            "ERROR", JOptionPane.ERROR_MESSAGE);*/
+                }
+            }
+
+            /*@Override
+            public void valueChanged(ListSelectionEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }*/
+        });
     }
     
     public ArrayList<Order> getOrders() {

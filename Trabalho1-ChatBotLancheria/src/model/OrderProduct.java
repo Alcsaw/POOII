@@ -24,6 +24,10 @@ public class OrderProduct {
     public double getTotalPrice() {
         return this.product.getPrice() * this.quantity;
     }
+    
+    public String getTotalPriceString() {
+        return Double.toString(getTotalPrice()).replace(".", ",");
+    }
 
     public Product getProduct() {
         return product;

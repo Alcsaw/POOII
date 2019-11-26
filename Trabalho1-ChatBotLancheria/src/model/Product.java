@@ -59,6 +59,10 @@ public class Product {
     public double getPrice() {
         return price;
     }
+    
+    public String getPriceString() {
+        return Double.toString(price).replace(".", ",");
+    }
 
     public void setPrice(double price) {
         this.price = price;

@@ -74,7 +74,7 @@ public class DAO<T> {
                 list.add((T)prod);
             }
         } else if(classe == Order.class) {
-            sql += " pedido ";
+            sql += " pedido WHERE entregue = 0";
             preparedStatement = connection.preparedStatement(sql);
             resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {

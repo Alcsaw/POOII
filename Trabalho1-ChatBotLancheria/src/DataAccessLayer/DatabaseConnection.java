@@ -15,7 +15,7 @@ public class DatabaseConnection {
     private String driver = "org.gjt.mm.mysql.Driver";
     private String url = "jdbc:mysql://localhost/" + "lancheria";
     private String usuario = "root";
-    private String senha = "root";
+    private String senha = "";
     private Connection connection;
     
     public DatabaseConnection() throws ClassNotFoundException, SQLException {
