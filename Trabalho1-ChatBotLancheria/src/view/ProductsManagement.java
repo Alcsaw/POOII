@@ -29,7 +29,8 @@ public class ProductsManagement extends javax.swing.JFrame {
         buttonDeleteProduct = new javax.swing.JButton();
         buttonAddProduct = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Gerenciamento de Produtos");
 
         tableProducts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -39,9 +40,24 @@ public class ProductsManagement extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Categoria", "Descricao", "Preço"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.Object.class, java.lang.Long.class, java.lang.Float.class
+            };
+            boolean[] canEdit = new boolean [] {
+                true, true, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tableProducts);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
