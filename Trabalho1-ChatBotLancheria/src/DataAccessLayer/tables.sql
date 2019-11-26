@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `lancheria`.`produto` (
   `preco` DECIMAL(6,2) NOT NULL,
   `categoria_id` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_produto_categoria_idx` (`categoria_id` ASC) VISIBLE,
+  INDEX `fk_produto_categoria_idx` (`categoria_id` ASC),
   CONSTRAINT `fk_produto_categoria`
     FOREIGN KEY (`categoria_id`)
     REFERENCES `lancheria`.`categoria` (`id`)
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `lancheria`.`pedido` (
   `entregue` TINYINT(1) NULL,
   `cliente_id` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_pedido_cliente1_idx` (`cliente_id` ASC) VISIBLE,
+  INDEX `fk_pedido_cliente1_idx` (`cliente_id` ASC),
   CONSTRAINT `fk_pedido_cliente1`
     FOREIGN KEY (`cliente_id`)
     REFERENCES `lancheria`.`cliente` (`id`)
@@ -82,8 +82,8 @@ CREATE TABLE IF NOT EXISTS `lancheria`.`pedido_item` (
   `preco` DECIMAL(6,2) NOT NULL,
   `observacao` VARCHAR(200) NULL,
   PRIMARY KEY (`produto_id`, `pedido_id`),
-  INDEX `fk_produto_has_pedido_pedido1_idx` (`pedido_id` ASC) VISIBLE,
-  INDEX `fk_produto_has_pedido_produto1_idx` (`produto_id` ASC) VISIBLE,
+  INDEX `fk_produto_has_pedido_pedido1_idx` (`pedido_id` ASC),
+  INDEX `fk_produto_has_pedido_produto1_idx` (`produto_id` ASC),
   CONSTRAINT `fk_produto_has_pedido_produto1`
     FOREIGN KEY (`produto_id`)
     REFERENCES `lancheria`.`produto` (`id`)
