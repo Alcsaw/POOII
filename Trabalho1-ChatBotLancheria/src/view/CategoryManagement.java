@@ -91,8 +91,18 @@ public class CategoryManagement extends javax.swing.JFrame {
         });
 
         buttonDeleteCategory.setText("Excluir Categoria");
+        buttonDeleteCategory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonDeleteCategoryActionPerformed(evt);
+            }
+        });
 
         buttonAddCategory.setText("Adicionar Categoria");
+        buttonAddCategory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonAddCategoryActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -167,9 +177,45 @@ public class CategoryManagement extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formFocusGained
 
+    private void buttonAddCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddCategoryActionPerformed
+        FormNewCategory formNewCategory = new FormNewCategory();
+        formNewCategory.setVisible(true);
+        formNewCategory.setLocationRelativeTo(this);
+    }//GEN-LAST:event_buttonAddCategoryActionPerformed
+
+    private void buttonDeleteCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteCategoryActionPerformed
+        int row = tableCategories.getSelectedRow();
+        TableModel tableModel = tableCategories.getModel();
+
+        int selectedID = (int) tableModel.getValueAt(row, 0);
+        System.out.println("ID para deletar: " + selectedID);
+
+        try {
+            DAO<Category> dao = new DAO<Category>();
+                
+            Category category = new Category();
+            category.setId(selectedID);
+            
+            Boolean success = dao.delete(category);
+            
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Categoria excluída com sucesso!",
+                            "SUCESSO!", JOptionPane.INFORMATION_MESSAGE);
+                loadTableCategories();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao excluir categoria.",
+                            "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
+            
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(CategoryManagement.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(this, ex.toString(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
+    }//GEN-LAST:event_buttonDeleteCategoryActionPerformed
+
     
     //método para carregar a tabela com o cliente da combo
-    private void loadTableCategories() throws ClassNotFoundException, SQLException {
+    public void loadTableCategories() throws ClassNotFoundException, SQLException {
         DefaultTableModel model = (DefaultTableModel) tableCategories.getModel();
         model.setRowCount(0);//limpar as linhas antigas da jTable
 

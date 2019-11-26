@@ -125,11 +125,17 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Excluir Categoria"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonDeleteCategoryActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="buttonAddCategory">
       <Properties>
         <Property name="text" type="java.lang.String" value="Adicionar Categoria"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonAddCategoryActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
