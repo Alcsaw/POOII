@@ -1,5 +1,15 @@
 package view;
 
+import DataAccessLayer.DAO;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import model.Category;
+
 /**
  *
  * @author m98567
@@ -29,19 +39,45 @@ public class CategoryManagement extends javax.swing.JFrame {
         buttonDeleteCategory = new javax.swing.JButton();
         buttonAddCategory = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Gerenciamento de Categorias");
+        addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                formFocusGained(evt);
+            }
+        });
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         tableCategories.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Descrição"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tableCategories);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -97,9 +133,59 @@ public class CategoryManagement extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonEditCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonEditCategoryActionPerformed
-        // TODO add your handling code here:
+
+        int row = tableCategories.getSelectedRow();
+        TableModel tableModel = tableCategories.getModel();
+
+        int selectedID = (int) tableModel.getValueAt(row, 0);
+        String selectedDescription = (String) tableModel.getValueAt(row, 1);
+        System.out.println("ID para editar: " + selectedID + " - " + selectedDescription);
+
+        FormEditCategory editCategory = new FormEditCategory(selectedID, selectedDescription);
+        //editCategory.setId(selectedID);
+        //editCategory.setDescription(selectedDescription);
+        editCategory.setVisible(true);
+        editCategory.setLocationRelativeTo(this);
+        
     }//GEN-LAST:event_buttonEditCategoryActionPerformed
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        try {
+            loadTableCategories();
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(CategoryManagement.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex.toString(), "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_formWindowOpened
+
+    private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
+        try {
+            loadTableCategories();
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(CategoryManagement.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex.toString(), "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_formFocusGained
+
+    
+    //método para carregar a tabela com o cliente da combo
+    private void loadTableCategories() throws ClassNotFoundException, SQLException {
+        DefaultTableModel model = (DefaultTableModel) tableCategories.getModel();
+        model.setRowCount(0);//limpar as linhas antigas da jTable
+
+        DAO dao = new DAO();
+        
+        ArrayList<Category> categories = dao.get(Category.class);
+
+        for (int i = 0; i < categories.size(); i++) {
+            //adicionar cada atendimento no JTable
+            Object[] obj = new Object[2];//vetor para as 2 colunas
+            obj[0] = categories.get(i).getId();
+            obj[1] = categories.get(i).getDescription();
+
+            model.addRow(obj);
+        }
+    }
     /**
      * @param args the command line arguments
      */
