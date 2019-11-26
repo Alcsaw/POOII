@@ -44,7 +44,8 @@ public class ProductsManagement extends javax.swing.JFrame {
         buttonDeleteProduct = new javax.swing.JButton();
         buttonAddProduct = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Gerenciamento de Produtos");
 
         tableProducts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
