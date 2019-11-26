@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package model;
 
 import java.sql.Date;
@@ -18,6 +13,7 @@ public class Order {
     private Client client;
     private ArrayList<OrderProduct> orderProducts;
     private String date;
+    private Double totalPrice;
     private boolean done;
     private boolean delivered;
 
@@ -31,6 +27,11 @@ public class Order {
         this.client = client;
         this.orderProducts = orderProducts;
         this.date = date;
+        double price = 0;
+        for (OrderProduct orderProduct : orderProducts) {
+            price += orderProduct.getTotalPrice();
+        }
+        this.totalPrice = price;
         this.done = done;
         this.delivered = delivered;
     }
@@ -69,6 +70,22 @@ public class Order {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+    
+    public String getTotalPriceString() {
+        return Double.toString(totalPrice).replace(".", ",");
+    }
+
+    public void setTotalPrice() {
+        double price = 0;
+        for (OrderProduct orderProduct : orderProducts) {
+            price += orderProduct.getTotalPrice();
+        }
+        this.totalPrice = price;
     }
 
     public boolean isDone() {

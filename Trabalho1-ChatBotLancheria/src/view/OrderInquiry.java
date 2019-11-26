@@ -1,18 +1,24 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
+
+import DataAccessLayer.DAO;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.Order;
 
 /**
  *
  * @author alcsaw
  */
 public class OrderInquiry extends javax.swing.JFrame {
+    
+    private ArrayList<Order> orders;
 
     /**
-     * Creates new form OrderInquiry2
+     * Creates new form OrderInquiry
      */
     public OrderInquiry() {
         initComponents();
@@ -29,8 +35,8 @@ public class OrderInquiry extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         panelControls = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        buttonRefresh = new javax.swing.JButton();
+        buttonFinishOrder = new javax.swing.JButton();
         panelOrdersToDeliver = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableOrders = new javax.swing.JTable();
@@ -42,12 +48,27 @@ public class OrderInquiry extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Consulta de Pedidos");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/refresh-icon.png"))); // NOI18N
-        jButton1.setText("Atualizar tela");
+        buttonRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/refresh-icon.png"))); // NOI18N
+        buttonRefresh.setText("Atualizar tela");
+        buttonRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonRefreshActionPerformed(evt);
+            }
+        });
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/success-icon.png"))); // NOI18N
-        jButton2.setText("Finalizar entrega");
+        buttonFinishOrder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/success-icon.png"))); // NOI18N
+        buttonFinishOrder.setText("Finalizar entrega");
+        buttonFinishOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonFinishOrderActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelControlsLayout = new javax.swing.GroupLayout(panelControls);
         panelControls.setLayout(panelControlsLayout);
@@ -56,17 +77,17 @@ public class OrderInquiry extends javax.swing.JFrame {
             .addGroup(panelControlsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(buttonFinishOrder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(buttonRefresh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelControlsLayout.setVerticalGroup(
             panelControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelControlsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1)
+                .addComponent(buttonRefresh)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
+                .addComponent(buttonFinishOrder)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -82,7 +103,7 @@ public class OrderInquiry extends javax.swing.JFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Float.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false
@@ -222,6 +243,60 @@ public class OrderInquiry extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void buttonRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buttonRefreshActionPerformed
+
+    private void buttonFinishOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonFinishOrderActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buttonFinishOrderActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        try {
+            loadTableOrders();
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(OrderInquiry.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex.toString(),
+                            "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_formWindowOpened
+
+    /**
+     * Loads the content of the table
+     * @throws ClassNotFoundException
+     * @throws SQLException 
+     */
+    public void loadTableOrders() throws ClassNotFoundException, SQLException {
+        DefaultTableModel model = (DefaultTableModel) tableOrders.getModel();
+        model.setRowCount(0);//limpar as linhas antigas da jTable
+
+        DAO dao = new DAO();
+        
+        setOrders(dao.get(Order.class));
+
+        for (int i = 0; i < orders.size(); i++) {
+            Order currentOrder = orders.get(i);
+            currentOrder.setTotalPrice();
+            
+            //adicionar cada atendimento no JTable
+            Object[] obj = new Object[4];//vetor para as 4 colunas
+            obj[0] = orders.get(i).getId();
+            obj[1] = orders.get(i).getClient();
+            obj[2] = orders.get(i).getDate();
+            obj[3] = orders.get(i).getTotalPrice();
+
+            model.addRow(obj);
+        }
+    }
+    
+    public ArrayList<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(ArrayList<Order> orders) {
+        this.orders = orders;
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -259,8 +334,8 @@ public class OrderInquiry extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton buttonFinishOrder;
+    private javax.swing.JButton buttonRefresh;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

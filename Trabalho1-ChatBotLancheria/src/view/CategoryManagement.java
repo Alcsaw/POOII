@@ -214,7 +214,11 @@ public class CategoryManagement extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonDeleteCategoryActionPerformed
 
     
-    //método para carregar a tabela com o cliente da combo
+    /**
+     * Loads the content of the table
+     * @throws ClassNotFoundException
+     * @throws SQLException 
+     */
     public void loadTableCategories() throws ClassNotFoundException, SQLException {
         DefaultTableModel model = (DefaultTableModel) tableCategories.getModel();
         model.setRowCount(0);//limpar as linhas antigas da jTable
