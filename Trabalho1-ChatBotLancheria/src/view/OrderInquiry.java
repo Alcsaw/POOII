@@ -1,6 +1,9 @@
 package view;
 
 import DataAccessLayer.DAO;
+import com.opencsv.CSVWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -50,6 +53,7 @@ public class OrderInquiry extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableItemsPerOrder = new javax.swing.JTable();
+        exportBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Consulta de Pedidos");
@@ -224,11 +228,21 @@ public class OrderInquiry extends javax.swing.JFrame {
                 .addGap(0, 0, 0))
         );
 
+        exportBtn.setText("Exportar CSV");
+        exportBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 640, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(469, Short.MAX_VALUE)
+                .addComponent(exportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -237,7 +251,10 @@ public class OrderInquiry extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(114, 114, 114)
+                .addComponent(exportBtn)
+                .addContainerGap(154, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                     .addContainerGap(17, Short.MAX_VALUE)
@@ -249,7 +266,14 @@ public class OrderInquiry extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshActionPerformed
-        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            loadTableOrders();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(OrderInquiry.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderInquiry.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_buttonRefreshActionPerformed
 
     private void buttonFinishOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonFinishOrderActionPerformed
@@ -287,6 +311,29 @@ public class OrderInquiry extends javax.swing.JFrame {
                             "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_formWindowOpened
+
+    private void exportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportBtnActionPerformed
+        try {                                          
+            ArrayList<Order> orders = new DAO<Order>().get(Order.class);
+            CSVWriter writer;
+            try {
+                writer = new CSVWriter(new FileWriter("./pedidos.csv"),',');
+                writer.writeNext(new String[] { "Id", "Data", "Finalizado", "Entregue", "Nome do cliente" });
+                for (Order or : orders) {
+                    writer.writeNext(or.toCSVString());
+                }
+                writer.close();
+                orders.clear();
+                JOptionPane.showMessageDialog(this, "Arquivo gerado na raíz do projeto!", "Arquivo salvo", JOptionPane.DEFAULT_OPTION);
+            } catch (IOException ex) {
+                Logger.getLogger(Trabalho1ChatBotLancheria.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(OrderInquiry.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderInquiry.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_exportBtnActionPerformed
 /**/
     /**
      * Loads the content of the table
@@ -422,6 +469,7 @@ public class OrderInquiry extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonFinishOrder;
     private javax.swing.JButton buttonRefresh;
+    private javax.swing.JButton exportBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
