@@ -60,11 +60,13 @@ public class Conversation {
             
         } else if(lastBotMsg.getText().contains("categoria")) {
             
-            Category categ = new DAO<Category>().getById(Category.class, Integer.parseInt(lastClientMsg.getText()));
+            int number = convertNumber(lastClientMsg.getText());
+            
+            Category categ = new DAO<Category>().getById(Category.class, number);
             responseMsg = categ == null ? Constants.DIDNT_UNDERSTAND_CATEGORY : Constants.ProductsMsg(categ);
             
         } else if(lastBotMsg.getText().contains("Por favor, escolha o produto")) {
-            
+            //TODO: Chamar o método convertNumber() nessa parte do código
             int categoryId = Integer.parseInt(this.messages.get(messages.size() - 3).getText());
             Product prod = new DAO<Product>().getById(Product.class, Integer.parseInt(lastClientMsg.getText()));
             if(prod == null) {
@@ -95,7 +97,11 @@ public class Conversation {
             
         } else if(lastBotMsg.getText().contains("Deseja adicionar mais algum produto?")) {
             
-            if(lastClientMsg.getText().toLowerCase().equals("sim")) {
+            if(lastClientMsg.getText().toLowerCase().equals("sim")
+                    || lastClientMsg.getText().toLowerCase().equals("s")
+                    || lastClientMsg.getText().toLowerCase().equals("ahan")
+                    || lastClientMsg.getText().toLowerCase().equals("uhum")
+                    || lastClientMsg.getText().toLowerCase().equals("s")) {
                 responseMsg = Constants.CategoryMsg();
             } else {
                 responseMsg = Constants.THANK_MSG;
@@ -103,7 +109,7 @@ public class Conversation {
                 this.messages = new ArrayList<TelegramMessage>();
             }
             
-        } 
+        }
         
         bot.sendMessage(this.client.getId() + "", responseMsg);
         response.setText(responseMsg);
@@ -201,6 +207,51 @@ public class Conversation {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    private int convertNumber(String text) {
+        int number = -1;
+        
+        /*Clean the text*/
+        text = text.trim();
+        text = text.replaceAll("[^a-zA-Z0-9]", "");
+        
+        try {
+            number = Integer.parseInt(text);
+        } catch (NumberFormatException nfe) {
+            
+            
+            if ( text.equalsIgnoreCase("um")
+                    || text.equalsIgnoreCase("uma") ) {
+                number = 1;
+            } else if (text.equalsIgnoreCase("dois")
+                    || text.equalsIgnoreCase("duas") ) {
+                number = 2;
+            } else if (text.equalsIgnoreCase("tres")
+                    || text.equalsIgnoreCase("trs") ) {
+                    // Caso venha com acento, é removido pelo regex
+                number = 3;
+            } else if (text.equalsIgnoreCase("quatro")
+                    || text.equalsIgnoreCase("quarto") ) {
+                    //pega até aquele errinho do corretor automático!
+                number = 4;
+            } else if (text.equalsIgnoreCase("cinco") ) {
+                number = 5;
+            } else if (text.equalsIgnoreCase("seis")
+                    || text.equalsIgnoreCase("meia dzia") ) {
+                number = 6;
+            } else if (text.equalsIgnoreCase("sete") ) {
+                number = 7;
+            } else if (text.equalsIgnoreCase("oito") ) {
+                number = 8;
+            } else if (text.equalsIgnoreCase("nove") ) {
+                number = 9;
+            } else if (text.equalsIgnoreCase("dez") ) {
+                number = 10;
+            }
+        }
+        
+        return number;
     }
     
     
