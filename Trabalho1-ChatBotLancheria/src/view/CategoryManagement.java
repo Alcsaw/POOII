@@ -144,18 +144,20 @@ public class CategoryManagement extends javax.swing.JFrame {
 
     private void buttonEditCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonEditCategoryActionPerformed
 
-        int row = tableCategories.getSelectedRow();
-        TableModel tableModel = tableCategories.getModel();
-
-        int selectedID = (int) tableModel.getValueAt(row, 0);
-        String selectedDescription = (String) tableModel.getValueAt(row, 1);
-        System.out.println("ID para editar: " + selectedID + " - " + selectedDescription);
-
-        FormEditCategory editCategory = new FormEditCategory(selectedID, selectedDescription);
-        //editCategory.setId(selectedID);
-        //editCategory.setDescription(selectedDescription);
-        editCategory.setVisible(true);
-        editCategory.setLocationRelativeTo(this);
+        try {
+            int row = tableCategories.getSelectedRow();
+            TableModel tableModel = tableCategories.getModel();
+            
+            int selectedID = (int) tableModel.getValueAt(row, 0);
+            Category c = new DAO<Category>().getById(Category.class, selectedID);
+            FormAddCateg editCategory = new FormAddCateg(c);
+            editCategory.setVisible(true);
+            loadTableCategories();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(CategoryManagement.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(CategoryManagement.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }//GEN-LAST:event_buttonEditCategoryActionPerformed
 
@@ -178,9 +180,15 @@ public class CategoryManagement extends javax.swing.JFrame {
     }//GEN-LAST:event_formFocusGained
 
     private void buttonAddCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddCategoryActionPerformed
-        FormNewCategory formNewCategory = new FormNewCategory();
-        formNewCategory.setVisible(true);
-        formNewCategory.setLocationRelativeTo(this);
+        try {
+            FormAddCateg formNewCategory = new FormAddCateg();
+            formNewCategory.setVisible(true);
+            loadTableCategories();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(CategoryManagement.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(CategoryManagement.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_buttonAddCategoryActionPerformed
 
     private void buttonDeleteCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteCategoryActionPerformed

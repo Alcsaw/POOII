@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import model.Product;
 
 /**
@@ -79,6 +80,11 @@ public class ProductsManagement extends javax.swing.JFrame {
         });
 
         buttonDeleteProduct.setText("Excluir Produto");
+        buttonDeleteProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonDeleteProductActionPerformed(evt);
+            }
+        });
 
         buttonAddProduct.setText("Adicionar Produto");
         buttonAddProduct.addActionListener(new java.awt.event.ActionListener() {
@@ -93,13 +99,13 @@ public class ProductsManagement extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(80, Short.MAX_VALUE)
+                .addContainerGap(51, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(122, 122, 122))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(buttonAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(buttonAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonEditProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -126,14 +132,63 @@ public class ProductsManagement extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonEditProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonEditProductActionPerformed
-        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            DAO<Product> pDAO = new DAO<Product>();
+            
+            int row = tableProducts.getSelectedRow();
+            TableModel tableModel = tableProducts.getModel();
+
+            int selectedID = (int) tableModel.getValueAt(row, 0);
+            Product p = new Product();
+            p = pDAO.getById(Product.class, selectedID);
+
+            FormAddProd form = new FormAddProd(p);
+            form.setVisible(true);
+            
+            loadTable();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ProductsManagement.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductsManagement.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }//GEN-LAST:event_buttonEditProductActionPerformed
 
     private void buttonAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddProductActionPerformed
         // TODO add your handling code here:
-        FormAddProduct form = new FormAddProduct();
+        FormAddProd form = new FormAddProd();
         form.setVisible(true);
+        
+        try {
+            loadTable();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ProductsManagement.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductsManagement.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_buttonAddProductActionPerformed
+
+    private void buttonDeleteProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteProductActionPerformed
+        try {
+            // TODO add your handling code here:
+            DAO<Product> pDAO = new DAO<Product>();
+            
+            int row = tableProducts.getSelectedRow();
+            TableModel tableModel = tableProducts.getModel();
+
+            int selectedID = (int) tableModel.getValueAt(row, 0);
+            Product p = pDAO.getById(Product.class, selectedID);
+            pDAO.delete(p);
+            loadTable();
+            
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ProductsManagement.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductsManagement.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }//GEN-LAST:event_buttonDeleteProductActionPerformed
 
     private void loadTable() throws ClassNotFoundException, SQLException {
         DefaultTableModel model = (DefaultTableModel) tableProducts.getModel();

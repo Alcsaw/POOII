@@ -55,24 +55,46 @@ public class Conversation {
         // Escolhe a resposta adequada
         String responseMsg = "";
         if(lastBotMsg == null) {
+            
             responseMsg = Constants.GREETING_MSG + "\n" + Constants.CategoryMsg();
+            
         } else if(lastBotMsg.getText().contains("categoria")) {
+            
             Category categ = new DAO<Category>().getById(Category.class, Integer.parseInt(lastClientMsg.getText()));
             responseMsg = categ == null ? Constants.DIDNT_UNDERSTAND_CATEGORY : Constants.ProductsMsg(categ);
+            
         } else if(lastBotMsg.getText().contains("Por favor, escolha o produto")) {
+            
+            int categoryId = Integer.parseInt(this.messages.get(messages.size() - 3).getText());
             Product prod = new DAO<Product>().getById(Product.class, Integer.parseInt(lastClientMsg.getText()));
-            responseMsg = prod == null ? Constants.DIDNT_UNDERSTAND_PRODUCT : Constants.QUANTITY_MSG;
+            if(prod == null) {
+                responseMsg = Constants.DIDNT_UNDERSTAND_PRODUCT;
+            } else if(prod.getCategory().getId() != categoryId) {
+                responseMsg = Constants.DIDNT_UNDERSTAND_PRODUCT;
+            } else {
+                responseMsg = Constants.QUANTITY_MSG;
+            }
+            
         } else if(lastBotMsg.getText().contains("Quantas unidades")) {
+            
             responseMsg = Constants.COMMENT_MSG;
+            
         } else if(lastBotMsg.getText().contains("Possui alguma observação quanto à este produto?")) {
+            
             responseMsg = Constants.ADD_PROD_MSG;
+            
         } else if(lastBotMsg.getText().contains(Constants.DIDNT_UNDERSTAND_CATEGORY)) {
+            
             Category categ = new DAO<Category>().getById(Category.class, Integer.parseInt(lastClientMsg.getText()));
             responseMsg = categ == null ? Constants.DIDNT_UNDERSTAND_CATEGORY : Constants.ProductsMsg(categ);
+            
         } else if(lastBotMsg.getText().contains(Constants.DIDNT_UNDERSTAND_PRODUCT)) {
+            
             Product prod = new DAO<Product>().getById(Product.class, Integer.parseInt(lastClientMsg.getText()));
             responseMsg = prod == null ? Constants.DIDNT_UNDERSTAND_PRODUCT : Constants.QUANTITY_MSG;
+            
         } else if(lastBotMsg.getText().contains("Deseja adicionar mais algum produto?")) {
+            
             if(lastClientMsg.getText().toLowerCase().equals("sim")) {
                 responseMsg = Constants.CategoryMsg();
             } else {
@@ -80,6 +102,7 @@ public class Conversation {
                 createOrder();
                 this.messages = new ArrayList<TelegramMessage>();
             }
+            
         } 
         
         bot.sendMessage(this.client.getId() + "", responseMsg);

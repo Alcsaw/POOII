@@ -27,7 +27,11 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <EmptySpace min="0" pref="640" max="32767" attributes="0"/>
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace pref="469" max="32767" attributes="0"/>
+              <Component id="exportBtn" min="-2" pref="146" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+          </Group>
           <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="32767" attributes="0"/>
@@ -39,7 +43,11 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <EmptySpace min="0" pref="300" max="32767" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="114" max="-2" attributes="0"/>
+              <Component id="exportBtn" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="154" max="32767" attributes="0"/>
+          </Group>
           <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace pref="17" max="32767" attributes="0"/>
@@ -321,5 +329,13 @@
         </Container>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JButton" name="exportBtn">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Exportar CSV"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportBtnActionPerformed"/>
+      </Events>
+    </Component>
   </SubComponents>
 </Form>
